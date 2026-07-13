@@ -113,7 +113,8 @@ export default function BeritaPage() {
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const inputElement = e.target;
+    const file = inputElement.files?.[0];
     if (!file) return;
 
     if (file.size > 10 * 1024 * 1024) {
@@ -125,53 +126,77 @@ export default function BeritaPage() {
       setIsUploading(true);
       toast.loading('Memproses gambar...', { id: 'upload' });
 
+      // Cek apakah benar-benar gambar
+      if (!file.type.startsWith('image/')) {
+        toast.error('Format salah! Mohon pilih file gambar (JPG/PNG).', { id: 'upload' });
+        setIsUploading(false);
+        inputElement.value = '';
+        return;
+      }
+
       // Membaca file gambar
       const reader = new FileReader();
-      reader.readAsDataURL(file);
       reader.onload = (event) => {
         const img = new Image();
         img.src = event.target?.result as string;
         img.onload = () => {
-          // Kompresi dengan Canvas
-          const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 1200;
-          const MAX_HEIGHT = 1200;
-          let width = img.width;
-          let height = img.height;
+          try {
+            // Kompresi dengan Canvas
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 1200;
+            const MAX_HEIGHT = 1200;
+            let width = img.width;
+            let height = img.height;
 
-          if (width > height) {
-            if (width > MAX_WIDTH) {
-              height *= MAX_WIDTH / width;
-              width = MAX_WIDTH;
+            if (width > height) {
+              if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+              }
+            } else {
+              if (height > MAX_HEIGHT) {
+                width *= MAX_HEIGHT / height;
+                height = MAX_HEIGHT;
+              }
             }
-          } else {
-            if (height > MAX_HEIGHT) {
-              width *= MAX_HEIGHT / height;
-              height = MAX_HEIGHT;
-            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx?.drawImage(img, 0, 0, width, height);
+
+            // Mengubah menjadi Base64 (JPEG, kualitas 80%)
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+            
+            setGambarSampul(dataUrl);
+            toast.success('Gambar berhasil diproses!', { id: 'upload' });
+          } catch (err) {
+            console.error(err);
+            // Fallback jika canvas gagal (misalnya karena format gambar tidak didukung penuh)
+            setGambarSampul(img.src);
+            toast.success('Gambar berhasil ditambahkan (tanpa kompresi)', { id: 'upload' });
+          } finally {
+            setIsUploading(false);
+            inputElement.value = ''; // reset file input
           }
-
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx?.drawImage(img, 0, 0, width, height);
-
-          // Mengubah menjadi Base64 (JPEG, kualitas 80%)
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-          
-          setGambarSampul(dataUrl);
-          toast.success('Gambar berhasil diproses!', { id: 'upload' });
-          setIsUploading(false);
-          if (e.target) e.target.value = ''; // reset file input
         };
         img.onerror = () => {
-          toast.error('Gagal membaca file gambar', { id: 'upload' });
+          toast.error('Format gambar ini tidak didukung browser', { id: 'upload' });
           setIsUploading(false);
+          inputElement.value = '';
         };
       };
+      reader.onerror = () => {
+        toast.error('Gagal membaca file dari komputer', { id: 'upload' });
+        setIsUploading(false);
+        inputElement.value = '';
+      };
+      
+      reader.readAsDataURL(file);
     } catch (error: any) {
       toast.error(error.message, { id: 'upload' });
       setIsUploading(false);
+      inputElement.value = '';
     }
   };
 
