@@ -27,6 +27,7 @@ export const navLinks = [
     { href: '/surat/pengajuan-surat', label: 'Pengajuan Surat' },
     { href: '/surat/pengajuan-sk', label: 'Pengajuan SK' },
   ]},
+  { href: '/konsultasi-hukum', label: 'Konsultasi Hukum' },
 ];
 
 export function Navbar() {
