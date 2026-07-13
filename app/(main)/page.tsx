@@ -54,13 +54,6 @@ const features = [
   { icon: BarChart3, title: 'Dashboard Analytics', desc: 'Statistik organisasi real-time dengan grafik pertumbuhan kader, surat, dan aktivitas kaderisasi.', color: 'from-teal-500 to-cyan-600' },
 ];
 
-const strukturPengurus = [
-  { jabatan: 'Ketua Umum', nama: 'H. Ahmad Zaenuri, S.Pd.', periode: '2024-2026' },
-  { jabatan: 'Wakil Ketua Umum', nama: 'Muhammad Iqbal, S.H.', periode: '2024-2026' },
-  { jabatan: 'Sekretaris Umum', nama: 'Siti Aisyah, S.Sos.', periode: '2024-2026' },
-  { jabatan: 'Bendahara Umum', nama: 'Rizky Pratama, S.E.', periode: '2024-2026' },
-];
-
 const faqs = [
   { q: 'Apa itu E-SAHABAT?', a: 'E-SAHABAT adalah Sistem Administrasi, Hub Arsip, dan Basis Anggota Terpadu milik PC PMII Kabupaten Bandung untuk layanan digital organisasi.' },
   { q: 'Siapa yang dapat mengakses E-SAHABAT?', a: 'Seluruh anggota dan pengurus PMII Kabupaten Bandung dapat mengakses sistem ini sesuai hak akses masing-masing.' },
@@ -93,7 +86,9 @@ export default function HomePage() {
 
   const [beritas, setBeritas] = useState<any[]>([]);
   const [upcomingAgenda, setUpcomingAgenda] = useState<any[]>([]);
+  const [strukturPengurus, setStrukturPengurus] = useState<any[]>([]);
   
+
   useEffect(() => {
     fetch('/api/public/stats', { cache: 'no-store' })
       .then(res => res.json())
@@ -111,6 +106,16 @@ export default function HomePage() {
       .then(res => res.json())
       .then(data => setUpcomingAgenda(data))
       .catch(err => console.error(err));
+
+    fetch('/api/pengurus', { cache: 'no-store' })
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          // Ambil 4 teratas
+          setStrukturPengurus(data.slice(0, 4));
+        }
+      })
+      .catch(console.error);
   }, []);
 
   const featuredBerita = beritas.length > 0 ? beritas[0] : null;
@@ -576,23 +581,29 @@ export default function HomePage() {
           </motion.div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {strukturPengurus.map((p, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="card p-5 text-center hover:shadow-card-hover"
-              >
-                <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-700 rounded-full mx-auto mb-3 flex items-center justify-center shadow-lg">
-                  <Users size={24} className="text-white" />
-                </div>
-                <div className="font-bold text-gray-900 dark:text-white text-sm mb-0.5">{p.nama}</div>
-                <div className="text-primary-500 text-xs font-medium mb-1">{p.jabatan}</div>
-                <div className="text-gray-400 text-xs">{p.periode}</div>
-              </motion.div>
-            ))}
+            {strukturPengurus.length === 0 ? (
+              <div className="col-span-full text-center py-10 text-gray-500">
+                Data pengurus belum diperbarui.
+              </div>
+            ) : (
+              strukturPengurus.map((p, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="card p-5 text-center hover:shadow-card-hover"
+                >
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-700 rounded-full mx-auto mb-3 flex items-center justify-center shadow-lg">
+                    <Users size={24} className="text-white" />
+                  </div>
+                  <div className="font-bold text-gray-900 dark:text-white text-sm mb-0.5">{p.nama}</div>
+                  <div className="text-primary-500 text-xs font-medium mb-1">{p.jabatan}</div>
+                  <div className="text-gray-400 text-xs">{p.periode || 'Periode Saat Ini'}</div>
+                </motion.div>
+              ))
+            )}
           </div>
 
           <div className="text-center mt-8">
