@@ -123,25 +123,55 @@ export default function BeritaPage() {
 
     try {
       setIsUploading(true);
-      toast.loading('Mengunggah gambar...', { id: 'upload' });
-      const formData = new FormData();
-      formData.append('image', file);
+      toast.loading('Memproses gambar...', { id: 'upload' });
 
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
+      // Membaca file gambar
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          // Kompresi dengan Canvas
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 1200;
+          const MAX_HEIGHT = 1200;
+          let width = img.width;
+          let height = img.height;
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Gagal mengunggah');
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
 
-      setGambarSampul(data.url);
-      toast.success('Gambar berhasil diunggah!', { id: 'upload' });
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+
+          // Mengubah menjadi Base64 (JPEG, kualitas 80%)
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+          
+          setGambarSampul(dataUrl);
+          toast.success('Gambar berhasil diproses!', { id: 'upload' });
+          setIsUploading(false);
+          if (e.target) e.target.value = ''; // reset file input
+        };
+        img.onerror = () => {
+          toast.error('Gagal membaca file gambar', { id: 'upload' });
+          setIsUploading(false);
+        };
+      };
     } catch (error: any) {
       toast.error(error.message, { id: 'upload' });
-    } finally {
       setIsUploading(false);
-      if (e.target) e.target.value = ''; // reset file input
     }
   };
 
