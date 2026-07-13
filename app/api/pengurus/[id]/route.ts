@@ -6,7 +6,7 @@ import { authOptions } from '@/lib/auth';
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || (session.user.role !== 'SUPER_ADMIN' && session.user.role !== 'ADMIN_CABANG')) {
+    if (!session || !session.user || (session.user.role !== 'SUPER_ADMIN' && session.user.role !== 'ADMIN_CABANG')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -33,7 +33,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || (session.user.role !== 'SUPER_ADMIN' && session.user.role !== 'ADMIN_CABANG')) {
+    if (!session || !session.user || (session.user.role !== 'SUPER_ADMIN' && session.user.role !== 'ADMIN_CABANG')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
