@@ -5,16 +5,18 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('id-ID', {
+export function formatDate(dateInput: string | Date | null | undefined): string {
+  if (!dateInput) return '-';
+  return new Date(dateInput).toLocaleDateString('id-ID', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
   });
 }
 
-export function formatDateShort(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('id-ID', {
+export function formatDateShort(dateInput: string | Date | null | undefined): string {
+  if (!dateInput) return '-';
+  return new Date(dateInput).toLocaleDateString('id-ID', {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
