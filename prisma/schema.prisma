@@ -1,0 +1,280 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ==========================================
+// 1. AUTENTIKASI & PENGGUNA (NextAuth Standard)
+// ==========================================
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id             String    @id @default(cuid())
+  name           String?
+  email          String?   @unique
+  emailVerified  DateTime?
+  image          String?
+  password       String? // Ditambahkan untuk credential login
+  role           Role      @default(USER) // Peran akses pengguna
+  statusApproval String    @default("PENDING") // PENDING, APPROVED, REJECTED
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  accounts       Account[]
+  sessions       Session[]
+  kader          Kader? // Relasi 1-1: 1 User bisa menjadi 1 Kader
+  berita         Berita[] // Berita yang ditulis user ini
+  pengajuanSurat PengajuanSurat[]
+  pengajuanSK    PengajuanSK[]
+  pesertaKaderisasi PesertaKaderisasi[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN_CABANG
+  ADMIN_KOMISARIAT
+  USER
+}
+
+// ==========================================
+// 2. BASIS DATA KADER (E-SAHABAT)
+// ==========================================
+
+model Kader {
+  id           String    @id @default(cuid())
+  userId       String?   @unique
+  nia          String?   @unique // Nomor Induk Anggota
+  namaLengkap  String
+  tempatLahir  String?
+  tanggalLahir DateTime?
+  jenisKelamin Gender
+  alamat       String?   @db.Text
+  noTelepon    String?
+
+  // Asal Usul
+  asalKampus String?
+  fakultas   String?
+  jurusan    String?
+  tahunMasuk Int?
+  rayon      String?
+  komisariat String?
+
+  // Jenjang Kaderisasi
+  statusMapaba Boolean @default(false)
+  statusPKD    Boolean @default(false)
+  statusPKL    Boolean @default(false)
+
+  // Meta
+  isVerified Boolean  @default(false)
+  fotoProfil String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum Gender {
+  LAKI_LAKI
+  PEREMPUAN
+}
+
+// ==========================================
+// 3. PUBLIKASI (BERITA & AGENDA)
+// ==========================================
+
+model Berita {
+  id           String  @id @default(cuid())
+  slug         String  @unique
+  judul        String
+  ringkasan    String  @db.Text
+  konten       String  @db.Text
+  kategori     String // Cth: PMII, Berita Cabang, Opini
+  gambarSampul String?
+  viewCount    Int     @default(0)
+  isPublished  Boolean @default(true)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Agenda {
+  id               String   @id @default(cuid())
+  judul            String
+  kategori         String // Cth: Rapat, Pelatihan, Kaderisasi
+  lokasi           String
+  waktuPelaksanaan DateTime
+  status           String // Cth: Mendatang, Selesai, Dibatalkan
+  deskripsi        String?  @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// 4. LAYANAN PERSURATAN & SK
+// ==========================================
+
+model PengajuanSurat {
+  id           String  @id @default(cuid())
+  nomorResi    String  @unique // Dibuat otomatis misal: SRT-20260713-001
+  userId       String? // Akun kader yang mengajukan
+  namaPemohon  String
+  asalStruktur String
+  jenisSurat   String // Mandat, Keterangan Aktif, Audiensi
+  perihal      String
+  tujuanSurat  String?
+  keterangan   String? @db.Text
+
+  status         StatusPengajuan @default(PENDING)
+  catatanAdmin   String?         @db.Text
+  fileBalasanUrl String? // URL file surat yang diterbitkan oleh PC PMII
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model PengajuanSK {
+  id            String    @id @default(cuid())
+  nomorResi     String    @unique
+  userId        String? // Akun kader yang mengajukan
+  tingkatan     TingkatSK // RAYON atau KOMISARIAT
+  namaStruktur  String // Misal: "Rayon Hukum"
+  periode       String // Misal: "2026-2027"
+  ketuaTerpilih String
+  asalStruktur  String // Komisariat (jika rayon) / Cabang (jika komisariat)
+
+  fileSyaratUrl  String // URL file ZIP yang diupload
+  status         StatusPengajuan @default(PENDING)
+  catatanAdmin   String?         @db.Text
+  fileBalasanUrl String? // URL file SK yang diterbitkan oleh PC PMII
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model Surat {
+  id         String   @id @default(cuid())
+  nomorSurat String   @unique
+  jenis      String // "MASUK" atau "KELUAR"
+  kategori   String // "SK", "Undangan", "Mandat", dll
+  perihal    String
+  pengirim   String? // Untuk surat masuk
+  tujuan     String? // Untuk surat keluar
+  tanggal    DateTime
+  fileUrl    String? // File fisik lampiran PDF/DOC
+  keterangan String?  @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum TingkatSK {
+  RAYON
+  KOMISARIAT
+}
+
+enum StatusPengajuan {
+  PENDING
+  DIPROSES
+  DITERIMA
+  DITOLAK
+}
+
+// ==========================================
+// 5. MODUL KADERISASI (SCREENING & PRESENSI)
+// ==========================================
+
+model ProgramKaderisasi {
+  id              String   @id @default(cuid())
+  jenis           String   // MAPABA, PKD, PKL
+  angkatan        String
+  tanggalMulai    DateTime
+  tanggalSelesai  DateTime
+  lokasi          String
+  komisariat      String?
+  deskripsi       String?  @db.Text
+  status          String   @default("OPEN") // DRAFT, OPEN, ONGOING, COMPLETED
+  kodePresensi    String?  @unique // e.g. "MPB-1234"
+  
+  peserta         PesertaKaderisasi[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model PesertaKaderisasi {
+  id                String   @id @default(cuid())
+  programId         String
+  userId            String
+  
+  alasanIkut        String?  @db.Text
+  pengalaman        String?  @db.Text
+  
+  statusScreening   String   @default("PENDING") // PENDING, LULUS_SCREENING, GAGAL_SCREENING
+  statusKelulusan   Boolean  @default(false)
+  waktuPresensi     DateTime? 
+  
+  program           ProgramKaderisasi @relation(fields: [programId], references: [id], onDelete: Cascade)
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([programId, userId])
+}
+
+model MateriKaderisasi {
+  id        String   @id @default(cuid())
+  judul     String
+  jenjang   String   // 'MAPABA', 'PKD', 'PKL'
+  fileUrl   String   // URL tautan Google Drive / Cloud
+  ukuran    String?  // '2 MB'
+  format    String?  // 'PDF'
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
