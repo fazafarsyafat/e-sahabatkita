@@ -209,11 +209,7 @@ export default function DashboardPage() {
             {new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
           </p>
         </div>
-        <div className="flex gap-2">
-          <Link href="/dashboard/surat/keluar" className="btn-primary text-sm py-2 px-4">
-            <FileText size={15} /> Buat Surat
-          </Link>
-        </div>
+
       </div>
 
       {/* Alert Banner */}

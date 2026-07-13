@@ -40,6 +40,7 @@ const navItems: NavItem[] = [
     roles: ['SUPER_ADMIN', 'ADMIN_CABANG'] // Hanya PC yang meninjau & mengarsip
   },
   { href: '/dashboard/berita', label: 'Berita & Pengumuman', icon: Newspaper, roles: ['SUPER_ADMIN', 'ADMIN_CABANG'] },
+  { href: '/dashboard/pengurus', label: 'Struktur Pengurus', icon: Building2, roles: ['SUPER_ADMIN', 'ADMIN_CABANG'] },
 
   // ================= USER / KADER BIASA =================
   {

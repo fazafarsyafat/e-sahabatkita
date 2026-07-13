@@ -14,19 +14,19 @@ export async function GET(request: Request) {
 
     // Hitung total kader
     const totalKader = await prisma.kader.count();
-    
+
     // Hitung unik komisariat & rayon dari tabel kader
     const kaders = await prisma.kader.findMany({ select: { komisariat: true, rayon: true } });
     const setKomisariat = new Set(kaders.map(k => k.komisariat).filter(k => k && k.trim() !== ''));
     const setRayon = new Set(kaders.map(k => k.rayon).filter(r => r && r.trim() !== ''));
-    
+
     // Surat
     const totalSuratMasuk = await prisma.surat.count({ where: { jenis: 'MASUK' } });
     const totalSuratKeluar = await prisma.surat.count({ where: { jenis: 'KELUAR' } });
-    
+
     // Arsip (Total surat)
     const totalArsip = await prisma.surat.count();
-    
+
     // Arsip tahun ini
     const tahunIni = new Date().getFullYear();
     const totalArsipTahunIni = await prisma.surat.count({
@@ -39,14 +39,14 @@ export async function GET(request: Request) {
 
     // Pengajuan Surat (Menunggu proses)
     const pengajuanSurat = await prisma.pengajuanSurat.count({ where: { status: 'PENDING' } });
-    
+
     // Tinjauan Surat Terbaru (Untuk Super Admin / Admin Cabang)
     const recentPengajuan = await prisma.pengajuanSurat.findMany({
       where: { status: 'PENDING' },
       orderBy: { createdAt: 'desc' },
       take: 5
     });
-    
+
     return NextResponse.json({
       stats: {
         totalKader,

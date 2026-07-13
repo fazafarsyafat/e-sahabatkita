@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, Edit, Save, Phone, Mail, MapPin, Calendar, Shield, Key, Camera } from 'lucide-react';
+import { User, Edit, Save, Phone, Mail, MapPin, Calendar, Shield, Key, Camera, Trash2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { cn, formatDate, getRoleLabel, getRoleColor, getJenjangBadge } from '@/lib/utils';
 import { mockKader } from '@/lib/mock-data';
@@ -13,6 +13,12 @@ export default function ProfilPage() {
   const user = session?.user as any;
   const [editing, setEditing] = useState(false);
   const kader = mockKader.find(k => k.email === user?.email) || mockKader[0];
+  const [jabatanList, setJabatanList] = useState(kader?.riwayatJabatan || []);
+
+  const toggleEdit = () => {
+    if (!editing) setJabatanList(kader?.riwayatJabatan || []);
+    setEditing(!editing);
+  };
 
   return (
     <div className="space-y-5">
@@ -21,7 +27,7 @@ export default function ProfilPage() {
           <h1 className="text-xl font-black text-gray-900 dark:text-white">Profil Saya</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Kelola informasi profil akun Anda</p>
         </div>
-        <button onClick={() => setEditing(!editing)} className={cn(editing ? 'btn-ghost border border-gray-200 dark:border-gray-700' : 'btn-primary', 'text-sm py-2 px-4')}>
+        <button onClick={toggleEdit} className={cn(editing ? 'btn-ghost border border-gray-200 dark:border-gray-700' : 'btn-primary', 'text-sm py-2 px-4')}>
           {editing ? 'Batal' : <><Edit size={15} /> Edit Profil</>}
         </button>
       </div>
@@ -109,25 +115,52 @@ export default function ProfilPage() {
           </div>
 
           {/* Riwayat Jabatan */}
-          {kader && kader.riwayatJabatan.length > 0 && (
+          {(kader && kader.riwayatJabatan.length > 0) || editing ? (
             <div className="card p-5">
-              <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <Shield size={16} className="text-primary-500" /> Riwayat Jabatan
-              </h3>
-              <div className="space-y-2">
-                {kader.riwayatJabatan.map(r => (
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                  <Shield size={16} className="text-primary-500" /> Riwayat Jabatan
+                </h3>
+                {editing && (
+                  <button onClick={() => setJabatanList([...jabatanList, { id: Date.now().toString(), jabatan: '', organisasi: '', periode: '' }])} className="text-xs text-primary-600 hover:underline font-bold">
+                    + Tambah
+                  </button>
+                )}
+              </div>
+              <div className="space-y-3">
+                {jabatanList.map((r, i) => (
                   <div key={r.id} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl">
-                    <div className="w-2 h-2 bg-primary-500 rounded-full flex-shrink-0" />
-                    <div className="flex-1">
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">{r.jabatan}</span>
-                      <span className="text-xs text-gray-400 ml-2">— {r.organisasi}</span>
-                    </div>
-                    <span className="badge badge-gray text-xs">{r.periode}</span>
+                    {!editing && <div className="w-2 h-2 bg-primary-500 rounded-full flex-shrink-0" />}
+                    
+                    {editing ? (
+                      <div className="flex-1 grid grid-cols-12 gap-2">
+                        <input className="col-span-5 input text-sm py-1.5 px-3" placeholder="Jabatan" value={r.jabatan} onChange={(e) => { const newL = [...jabatanList]; newL[i].jabatan = e.target.value; setJabatanList(newL); }} />
+                        <input className="col-span-4 input text-sm py-1.5 px-3" placeholder="Organisasi" value={r.organisasi} onChange={(e) => { const newL = [...jabatanList]; newL[i].organisasi = e.target.value; setJabatanList(newL); }} />
+                        <input className="col-span-3 input text-sm py-1.5 px-3" placeholder="Periode" value={r.periode} onChange={(e) => { const newL = [...jabatanList]; newL[i].periode = e.target.value; setJabatanList(newL); }} />
+                      </div>
+                    ) : (
+                      <>
+                        <div className="flex-1">
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">{r.jabatan}</span>
+                          <span className="text-xs text-gray-400 ml-2">— {r.organisasi}</span>
+                        </div>
+                        <span className="badge badge-gray text-xs">{r.periode}</span>
+                      </>
+                    )}
+
+                    {editing && (
+                      <button onClick={() => setJabatanList(jabatanList.filter(item => item.id !== r.id))} className="text-red-500 hover:text-red-600 p-1 flex-shrink-0">
+                        <Trash2 size={16} />
+                      </button>
+                    )}
                   </div>
                 ))}
+                {jabatanList.length === 0 && !editing && (
+                  <p className="text-sm text-gray-500">Belum ada riwayat jabatan.</p>
+                )}
               </div>
             </div>
-          )}
+          ) : null}
 
           {/* Keamanan Akun */}
           <div className="card p-5">

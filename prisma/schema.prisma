@@ -278,3 +278,19 @@ model MateriKaderisasi {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+// ==========================================
+// 6. STRUKTUR PENGURUS (PROFIL)
+// ==========================================
+
+model StrukturPengurus {
+  id        String   @id @default(cuid())
+  nama      String
+  jabatan   String
+  divisi    String   // 'Badan Pengurus Harian' atau 'Biro / Lembaga'
+  urutan    Int      @default(0) // Untuk mengatur hirarki
+  periode   String?  // Misal '2026-2027'
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
