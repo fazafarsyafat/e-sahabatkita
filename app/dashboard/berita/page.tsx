@@ -116,8 +116,8 @@ export default function BeritaPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error('Ukuran gambar maksimal 2MB');
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error('Ukuran gambar maksimal 10MB');
       return;
     }
 
