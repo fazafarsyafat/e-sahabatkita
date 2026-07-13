@@ -214,6 +214,7 @@ export default function KaderPage() {
       setSelectedKader(kader);
       setFormData({
         namaLengkap: kader.namaLengkap || '',
+        email: kader.user?.email || '',
         nia: kader.nia || '',
         jenisKelamin: kader.jenisKelamin || 'LAKI_LAKI',
         tempatLahir: kader.tempatLahir || '',
@@ -233,7 +234,7 @@ export default function KaderPage() {
     } else {
       setSelectedKader(null);
       setFormData({
-        namaLengkap: '', nia: '', jenisKelamin: 'LAKI_LAKI', tempatLahir: '', tanggalLahir: '',
+        namaLengkap: '', email: '', nia: '', jenisKelamin: 'LAKI_LAKI', tempatLahir: '', tanggalLahir: '',
         noTelepon: '', alamat: '', asalKampus: '', fakultas: '', jurusan: '', tahunMasuk: '',
         komisariat: '', rayon: '', statusMapaba: false, statusPKD: false, statusPKL: false
       });
