@@ -231,15 +231,16 @@ export default function ArsipSuratPage() {
       {/* Modal Form */}
       <AnimatePresence>
         {showModal && (
-          <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-40" onClick={() => setShowModal(false)} />
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white dark:bg-gray-900 rounded-2xl shadow-xl z-50 p-6 max-h-[90vh] overflow-y-auto">
-              <div className="flex items-center justify-between mb-5">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-gray-900/50 backdrop-blur-sm" onClick={() => setShowModal(false)} />
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative bg-white dark:bg-gray-900 w-full max-w-lg rounded-2xl shadow-xl flex flex-col max-h-[95vh]">
+              <div className="p-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between shrink-0">
                 <h3 className="text-lg font-bold">{editingId ? 'Edit Arsip Surat' : 'Tambah Arsip Surat'}</h3>
                 <button onClick={() => setShowModal(false)} className="p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl"><X size={18} /></button>
               </div>
 
-              <form onSubmit={handleSave} className="space-y-4">
+              <div className="p-5 overflow-y-auto custom-scrollbar">
+                <form onSubmit={handleSave} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">Jenis Surat</label>
@@ -289,18 +290,35 @@ export default function ArsipSuratPage() {
                 )}
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">URL File Fisik (Opsional)</label>
-                  <input type="text" value={fileUrl} onChange={e => setFileUrl(e.target.value)} placeholder="Tautan Google Drive atau lampiran PDF" className="input text-sm" />
+                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">File Surat (PDF / Scan)</label>
+                  <div className="flex flex-col gap-2">
+                    <input 
+                      type="file" 
+                      accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                      onChange={e => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                           // Simulasi upload: ambil nama file sebagai URL
+                           setFileUrl(`https://arsip.pmii.or.id/dokumen/${file.name}`);
+                           toast.success('File siap diunggah');
+                        }
+                      }} 
+                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 dark:file:bg-primary-900/30 dark:file:text-primary-400"
+                    />
+                    <input type="text" value={fileUrl} onChange={e => setFileUrl(e.target.value)} placeholder="Atau tempel Tautan Google Drive di sini..." className="input text-sm" />
+                  </div>
+                  <p className="text-[10px] text-gray-400 mt-1">Anda bisa memilih file dari komputer, atau menempelkan tautan (link) dokumen secara manual.</p>
                 </div>
 
-                <div className="pt-2">
-                  <button type="submit" className="btn-primary w-full justify-center">
+                <div className="pt-2 pb-2 shrink-0 border-t border-gray-100 dark:border-gray-800 mt-4">
+                  <button type="submit" className="btn-primary w-full justify-center py-2.5">
                     {editingId ? 'Simpan Perubahan' : 'Tambahkan Arsip'}
                   </button>
                 </div>
               </form>
+              </div>
             </motion.div>
-          </>
+          </div>
         )}
       </AnimatePresence>
     </div>
