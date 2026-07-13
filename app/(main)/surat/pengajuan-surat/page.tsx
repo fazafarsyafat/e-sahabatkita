@@ -1,108 +1,76 @@
 'use client';
 
-import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FileSignature, Send, CheckCircle } from 'lucide-react';
+import { FileSignature, LogIn, Phone, FileText, CheckCircle2 } from 'lucide-react';
+import Link from 'next/link';
 
 export default function PengajuanSuratPage() {
-  const [formState, setFormState] = useState<'idle' | 'submitting' | 'success'>('idle');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormState('submitting');
-    setTimeout(() => {
-      setFormState('success');
-    }, 2000);
-  };
-
   return (
     <div className="max-w-3xl mx-auto">
-      
       <div className="flex items-center gap-4 mb-8">
         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-white shadow-lg flex-shrink-0">
           <FileSignature size={28} />
         </div>
         <div>
           <h2 className="text-2xl font-black text-gray-900 dark:text-white">Pengajuan Surat Cabang</h2>
-          <p className="text-gray-600 dark:text-gray-400">Silakan isi formulir untuk memohon penerbitan surat resmi dari Cabang.</p>
+          <p className="text-gray-600 dark:text-gray-400">Informasi dan prosedur permohonan penerbitan surat resmi dari Cabang.</p>
         </div>
       </div>
 
       <div className="bg-white dark:bg-gray-900 rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-gray-800">
-        
-        {formState === 'idle' && (
-          <motion.form initial={{ opacity: 0 }} animate={{ opacity: 1 }} onSubmit={handleSubmit} className="space-y-6">
-            
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Nama Pemohon</label>
-                <input required type="text" className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Nama Lengkap..." />
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Asal Rayon / Komisariat</label>
-                <input required type="text" className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Cth: Komisariat UIN..." />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Jenis Surat yang Diminta</label>
-              <select required className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-700 dark:text-gray-300">
-                <option value="">-- Pilih Jenis Surat --</option>
-                <option value="mandat">Surat Mandat</option>
-                <option value="keterangan_aktif">Surat Keterangan Aktif</option>
-                <option value="rekomendasi">Surat Rekomendasi</option>
-                <option value="peminjaman">Surat Peminjaman Tempat/Alat</option>
-                <option value="audiensi">Surat Permohonan Audiensi</option>
-                <option value="lainnya">Lainnya...</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Perihal / Keperluan</label>
-              <input required type="text" className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Misal: Mandat peserta Halaqoh Nasional" />
-            </div>
-
-            <div>
-              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Instansi/Pihak Tujuan (Opsional)</label>
-              <input type="text" className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Misal: PB PMII, Rektorat, Kepala Desa..." />
-            </div>
-
-            <div>
-              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Keterangan Tambahan</label>
-              <textarea rows={4} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Berikan detail tambahan jika ada (misal: waktu dan tempat kegiatan)..." />
-            </div>
-
-            <div className="pt-4 border-t border-gray-100 dark:border-gray-800">
-              <button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl shadow-lg transition-colors flex items-center justify-center gap-2 text-lg">
-                <Send size={20} /> Kirim Pengajuan
-              </button>
-            </div>
-          </motion.form>
-        )}
-
-        {formState === 'submitting' && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-20 flex flex-col items-center justify-center text-center">
-            <div className="w-16 h-16 border-4 border-gray-200 border-t-green-600 rounded-full animate-spin mb-6" />
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Memproses Pengajuan...</h3>
-            <p className="text-gray-500 text-sm">Menghubungkan ke server persuratan Cabang.</p>
-          </motion.div>
-        )}
-
-        {formState === 'success' && (
-          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="py-16 text-center">
-            <div className="w-24 h-24 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg shadow-green-500/20">
-              <CheckCircle size={48} />
-            </div>
-            <h3 className="text-3xl font-black text-gray-900 dark:text-white mb-4">Pengajuan Terkirim!</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto leading-relaxed">
-              Formulir pengajuan surat Anda telah berhasil masuk ke antrean persuratan Sekretaris Cabang. Surat akan diproses maksimal 1x24 Jam kerja.
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+          
+          <div className="space-y-4">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-800 pb-2">
+              Persyaratan Pengajuan Surat
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+              Sebelum mengajukan permohonan surat (seperti Surat Keterangan Aktif, Mandat, Audiensi, Rekomendasi, dll), pastikan Anda telah menyiapkan hal-hal berikut:
             </p>
-            <button onClick={() => setFormState('idle')} className="text-green-600 font-bold hover:underline">
-              Ajukan Surat Lainnya
-            </button>
-          </motion.div>
-        )}
+            <ul className="space-y-3">
+              <li className="flex items-start gap-3">
+                <CheckCircle2 className="text-green-500 mt-0.5 flex-shrink-0" size={20} />
+                <span className="text-gray-700 dark:text-gray-300">Tujuan dan perihal surat yang jelas (Instansi tujuan, tanggal kegiatan, dll).</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <CheckCircle2 className="text-green-500 mt-0.5 flex-shrink-0" size={20} />
+                <span className="text-gray-700 dark:text-gray-300">Draf atau konsep surat (jika ada format khusus yang diminta).</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <CheckCircle2 className="text-green-500 mt-0.5 flex-shrink-0" size={20} />
+                <span className="text-gray-700 dark:text-gray-300">Dokumen pendukung lainnya yang relevan dengan jenis surat yang diajukan.</span>
+              </li>
+            </ul>
+          </div>
 
+          <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-6 border border-blue-100 dark:border-blue-900/50">
+            <h4 className="text-lg font-bold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
+              <FileText size={20} /> Prosedur Pengajuan
+            </h4>
+            <p className="text-blue-800 dark:text-blue-200 mb-6">
+              Saat ini, seluruh proses administrasi dan pengajuan surat dilakukan terpusat melalui <strong>Dashboard Sistem</strong>. Anda harus memiliki akun dan masuk ke dalam sistem untuk mengajukan surat.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link href="/login" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-colors flex items-center justify-center gap-2 text-center shadow-md">
+                <LogIn size={18} /> Masuk ke Dashboard
+              </Link>
+            </div>
+          </div>
+
+          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
+             <h4 className="font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+               Belum punya akun?
+             </h4>
+             <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-4">
+               Hanya pengurus yang terdaftar yang dapat mengakses Dashboard. Jika Anda adalah pengurus (Rayon/Komisariat) namun belum memiliki akun, silakan hubungi Administrator Cabang untuk mendaftar.
+             </p>
+             <a href="https://wa.me/6285871474769" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-green-600 dark:text-green-400 hover:underline">
+               <Phone size={16} /> Hubungi Admin Cabang
+             </a>
+          </div>
+
+        </motion.div>
       </div>
     </div>
   );
