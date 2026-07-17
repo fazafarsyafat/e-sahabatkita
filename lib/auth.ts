@@ -49,6 +49,8 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           role: user.role, // Kita lemparkan rolenya agar bisa dibaca di frontend
+          komisariatId: user.komisariatId,
+          rayonId: user.rayonId,
         };
       }
     })
@@ -59,6 +61,8 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.role = (user as any).role;
         token.id = user.id;
+        token.komisariatId = (user as any).komisariatId;
+        token.rayonId = (user as any).rayonId;
       }
       return token;
     },
@@ -67,6 +71,8 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         (session.user as any).role = token.role;
         (session.user as any).id = token.id;
+        (session.user as any).komisariatId = token.komisariatId;
+        (session.user as any).rayonId = token.rayonId;
       }
       return session;
     }

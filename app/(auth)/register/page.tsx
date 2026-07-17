@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -12,6 +12,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [komisariats, setKomisariats] = useState<any[]>([]);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -27,9 +28,24 @@ export default function RegisterPage() {
     fakultas: '',
     jurusan: '',
     tahunMasuk: '',
-    komisariat: '',
-    rayon: ''
+    komisariatId: '',
+    rayonId: ''
   });
+
+  useEffect(() => {
+    fetch('/api/organisasi')
+      .then(res => res.json())
+      .then(data => setKomisariats(data.data || []))
+      .catch(err => console.error(err));
+  }, []);
+
+  const selectedKomisariat = komisariats.find(k => k.id === formData.komisariatId);
+  const availableRayons = selectedKomisariat?.rayon || [];
+
+  // Reset rayonId when komisariat changes
+  useEffect(() => {
+    setFormData(prev => ({ ...prev, rayonId: '' }));
+  }, [formData.komisariatId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -213,12 +229,24 @@ export default function RegisterPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="relative">
                   <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-                  <input type="text" name="komisariat" value={formData.komisariat} onChange={handleChange} placeholder="Asal Komisariat" className="input pl-10 text-sm py-2.5" />
+                  <select name="komisariatId" value={formData.komisariatId} onChange={handleChange} className="input pl-10 text-sm py-2.5 text-gray-600">
+                    <option value="">Pilih Komisariat</option>
+                    {komisariats.map(k => (
+                      <option key={k.id} value={k.id}>{k.nama}</option>
+                    ))}
+                  </select>
                 </div>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-                  <input type="text" name="rayon" value={formData.rayon} onChange={handleChange} placeholder="Asal Rayon" className="input pl-10 text-sm py-2.5" />
-                </div>
+                {availableRayons.length > 0 && (
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                    <select name="rayonId" value={formData.rayonId} onChange={handleChange} className="input pl-10 text-sm py-2.5 text-gray-600">
+                      <option value="">Pilih Rayon</option>
+                      {availableRayons.map((r: any) => (
+                        <option key={r.id} value={r.id}>{r.nama}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
             </div>
 

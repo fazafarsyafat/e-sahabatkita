@@ -5,11 +5,10 @@ import bcrypt from 'bcryptjs';
 export async function POST(request: Request) {
   try {
     const data = await request.json();
-    const { 
       name, email, password, noTelepon, 
       tempatLahir, tanggalLahir, jenisKelamin, alamat,
       asalKampus, fakultas, jurusan, tahunMasuk,
-      komisariat, rayon 
+      komisariatId, rayonId 
     } = data;
 
     if (!email || !password || !name) {
@@ -28,8 +27,10 @@ export async function POST(request: Request) {
         name,
         email,
         password: hashedPassword,
-        role: 'USER',
+        role: 'ANGGOTA',
         statusApproval: 'PENDING',
+        komisariatId: komisariatId || null,
+        rayonId: rayonId || null,
         kader: {
           create: {
             namaLengkap: name,
@@ -42,8 +43,8 @@ export async function POST(request: Request) {
             fakultas: fakultas || null,
             jurusan: jurusan || null,
             tahunMasuk: tahunMasuk ? parseInt(tahunMasuk) : null,
-            komisariat: komisariat || null,
-            rayon: rayon || null,
+            komisariatId: komisariatId || null,
+            rayonId: rayonId || null,
           }
         }
       }
