@@ -21,6 +21,7 @@ export default function KaderPage() {
   
   const [showModal, setShowModal] = useState(false);
   const [showKtaModal, setShowKtaModal] = useState(false);
+  const [organisasiData, setOrganisasiData] = useState<any[]>([]);
   
   const [selectedKader, setSelectedKader] = useState<any | null>(null);
   const [activeTab, setActiveTab] = useState<'AKTIF' | 'PENDING'>('AKTIF');
@@ -33,7 +34,7 @@ export default function KaderPage() {
   const [formData, setFormData] = useState({
     namaLengkap: '', email: '', nia: '', jenisKelamin: 'LAKI_LAKI', tempatLahir: '', tanggalLahir: '',
     noTelepon: '', alamat: '', asalKampus: '', fakultas: '', jurusan: '', tahunMasuk: '',
-    komisariat: '', rayon: '', statusMapaba: false, statusPKD: false, statusPKL: false,
+    komisariatId: '', rayonId: '', statusMapaba: false, statusPKD: false, statusPKL: false,
   });
 
   const fetchData = async () => {
@@ -54,6 +55,15 @@ export default function KaderPage() {
     }, 500); // 500ms delay untuk pencarian
     return () => clearTimeout(delayDebounce);
   }, [search]);
+
+  useEffect(() => {
+    fetch('/api/organisasi')
+      .then(res => res.json())
+      .then(d => {
+        if (d.data) setOrganisasiData(d.data);
+      })
+      .catch(console.error);
+  }, []);
 
   const handleExport = () => {
     toast.success('Mengunduh file Excel...');
@@ -225,8 +235,8 @@ export default function KaderPage() {
         fakultas: kader.fakultas || '',
         jurusan: kader.jurusan || '',
         tahunMasuk: kader.tahunMasuk || '',
-        komisariat: kader.komisariat || '',
-        rayon: kader.rayon || '',
+        komisariatId: kader.komisariatId || '',
+        rayonId: kader.rayonId || '',
         statusMapaba: kader.statusMapaba || false,
         statusPKD: kader.statusPKD || false,
         statusPKL: kader.statusPKL || false,
@@ -236,7 +246,7 @@ export default function KaderPage() {
       setFormData({
         namaLengkap: '', email: '', nia: '', jenisKelamin: 'LAKI_LAKI', tempatLahir: '', tanggalLahir: '',
         noTelepon: '', alamat: '', asalKampus: '', fakultas: '', jurusan: '', tahunMasuk: '',
-        komisariat: '', rayon: '', statusMapaba: false, statusPKD: false, statusPKL: false
+        komisariatId: '', rayonId: '', statusMapaba: false, statusPKD: false, statusPKL: false
       });
     }
     setShowModal(true);
@@ -372,8 +382,8 @@ export default function KaderPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm font-semibold text-gray-800 dark:text-gray-200">{k.komisariat || '-'}</div>
-                      <div className="text-xs text-gray-500 mt-0.5">{k.rayon || '-'}</div>
+                      <div className="text-sm font-semibold text-gray-800 dark:text-gray-200">{k.komisariat?.nama || '-'}</div>
+                      <div className="text-xs text-gray-500 mt-0.5">{k.rayon?.nama || '-'}</div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-1">
@@ -627,11 +637,21 @@ export default function KaderPage() {
                       </div>
                       <div>
                         <label className="label">Komisariat PMII</label>
-                        <input value={formData.komisariat} onChange={e=>setFormData({...formData, komisariat: e.target.value})} className="input" />
+                        <select value={formData.komisariatId} onChange={e=>setFormData({...formData, komisariatId: e.target.value, rayonId: ''})} className="input">
+                          <option value="">-- Pilih Komisariat --</option>
+                          {organisasiData.map((k: any) => (
+                            <option key={k.id} value={k.id}>{k.nama}</option>
+                          ))}
+                        </select>
                       </div>
                       <div>
                         <label className="label">Rayon PMII</label>
-                        <input value={formData.rayon} onChange={e=>setFormData({...formData, rayon: e.target.value})} className="input" placeholder="Boleh dikosongkan jika pengurus kom" />
+                        <select value={formData.rayonId} onChange={e=>setFormData({...formData, rayonId: e.target.value})} className="input" disabled={!formData.komisariatId}>
+                          <option value="">-- Boleh dikosongkan jika pengurus kom --</option>
+                          {organisasiData.find((k: any) => k.id === formData.komisariatId)?.rayon?.map((r: any) => (
+                            <option key={r.id} value={r.id}>{r.nama}</option>
+                          ))}
+                        </select>
                       </div>
                     </div>
                   </div>
