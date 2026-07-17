@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import * as xlsx from 'xlsx';
 import { formatDate } from '@/lib/utils';
+import { getScopeFilter } from '@/lib/scope';
 
 export async function GET(request: Request) {
   try {
@@ -12,7 +13,11 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const scopeFilter = getScopeFilter(session);
+
     const kaders = await prisma.kader.findMany({
+      where: scopeFilter,
+      include: { komisariat: true, rayon: true },
       orderBy: { createdAt: 'desc' }
     });
 
@@ -29,8 +34,8 @@ export async function GET(request: Request) {
       'Fakultas': kader.fakultas || '-',
       'Jurusan': kader.jurusan || '-',
       'Tahun Masuk': kader.tahunMasuk || '-',
-      'Komisariat': kader.komisariat || '-',
-      'Rayon': kader.rayon || '-',
+      'Komisariat': kader.komisariat?.nama || '-',
+      'Rayon': kader.rayon?.nama || '-',
       'Status MAPABA': kader.statusMapaba ? 'Lulus' : 'Belum',
       'Status PKD': kader.statusPKD ? 'Lulus' : 'Belum',
       'Status PKL': kader.statusPKL ? 'Lulus' : 'Belum',
