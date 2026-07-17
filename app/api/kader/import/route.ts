@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import * as xlsx from 'xlsx';
+import { getScopeFilter } from '@/lib/scope';
 
 export async function POST(request: Request) {
   try {
@@ -20,6 +21,20 @@ export async function POST(request: Request) {
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
+
+    const scopeFilter = getScopeFilter(session);
+
+    // Fetch master data untuk mapping nama string -> UUID
+    const dbKomisariats = await prisma.komisariat.findMany({ include: { rayon: true } });
+    const komMap = new Map<string, string>();
+    const rayonMap = new Map<string, string>();
+
+    for (const kom of dbKomisariats) {
+      komMap.set(kom.nama.trim().toLowerCase(), kom.id);
+      for (const ry of kom.rayon) {
+        rayonMap.set(ry.nama.trim().toLowerCase(), ry.id);
+      }
+    }
 
     // Parsing Excel
     const workbook = xlsx.read(buffer, { type: 'buffer' });
@@ -44,6 +59,16 @@ export async function POST(request: Request) {
 
         const nia = row['NIA / KTA'] || row['nia'] || row['NIA'] || null;
 
+        const namaKom = row['Komisariat'] ? String(row['Komisariat']).trim().toLowerCase() : '';
+        const namaRayon = row['Rayon'] ? String(row['Rayon']).trim().toLowerCase() : '';
+        
+        let komisariatId = komMap.get(namaKom) || null;
+        let rayonId = rayonMap.get(namaRayon) || null;
+
+        // Force scope security (Sekretaris Komisariat tidak boleh import kader untuk Komisariat lain)
+        if ((scopeFilter as any).komisariatId) komisariatId = (scopeFilter as any).komisariatId;
+        if ((scopeFilter as any).rayonId) rayonId = (scopeFilter as any).rayonId;
+
         await prisma.kader.create({
           data: {
             namaLengkap: String(namaLengkap),
@@ -58,8 +83,8 @@ export async function POST(request: Request) {
             fakultas: row['Fakultas'] ? String(row['Fakultas']) : null,
             jurusan: row['Jurusan'] ? String(row['Jurusan']) : null,
             tahunMasuk: row['Tahun Masuk'] ? parseInt(row['Tahun Masuk']) : null,
-            komisariat: row['Komisariat'] ? String(row['Komisariat']) : null,
-            rayon: row['Rayon'] ? String(row['Rayon']) : null,
+            komisariatId,
+            rayonId,
             statusMapaba: row['Status MAPABA']?.toString().toLowerCase().includes('lulus') || false,
             statusPKD: row['Status PKD']?.toString().toLowerCase().includes('lulus') || false,
             statusPKL: row['Status PKL']?.toString().toLowerCase().includes('lulus') || false,
