@@ -33,6 +33,7 @@ export const navLinks = [
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -126,28 +127,47 @@ export function Navbar() {
             <div className="container-lg py-4 space-y-1">
               {navLinks.map((link) => (
                 <div key={link.href}>
-                  <Link
-                    href={link.href}
-                    onClick={() => !link.submenu && setMenuOpen(false)}
-                    className="flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600"
-                  >
-                    {link.label}
-                    {link.submenu && <ChevronDown size={14} />}
-                  </Link>
-                  {link.submenu && (
-                    <div className="pl-4 mt-1 space-y-1 border-l-2 border-gray-100 dark:border-gray-800 ml-4">
-                      {link.submenu.map(sub => (
-                        <Link 
-                          key={sub.href} 
-                          href={sub.href}
-                          onClick={() => setMenuOpen(false)}
-                          className="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600"
-                        >
-                          {sub.label}
-                        </Link>
-                      ))}
-                    </div>
+                  {link.submenu ? (
+                    <button
+                      onClick={() => setActiveSubmenu(activeSubmenu === link.label ? null : link.label)}
+                      className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600"
+                    >
+                      {link.label}
+                      <ChevronDown size={14} className={`transition-transform duration-200 ${activeSubmenu === link.label ? 'rotate-180' : ''}`} />
+                    </button>
+                  ) : (
+                    <Link
+                      href={link.href}
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600"
+                    >
+                      {link.label}
+                    </Link>
                   )}
+                  
+                  <AnimatePresence>
+                    {link.submenu && activeSubmenu === link.label && (
+                      <motion.div 
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="pl-4 mt-1 overflow-hidden"
+                      >
+                        <div className="space-y-1 border-l-2 border-gray-100 dark:border-gray-800 ml-4 py-1">
+                          {link.submenu.map(sub => (
+                            <Link 
+                              key={sub.href} 
+                              href={sub.href}
+                              onClick={() => setMenuOpen(false)}
+                              className="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600"
+                            >
+                              {sub.label}
+                            </Link>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               ))}
               <div className="pt-4 flex gap-2">
