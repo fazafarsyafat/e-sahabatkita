@@ -71,7 +71,58 @@ async function main() {
     }
   })
 
-  console.log('Super Admin berhasil di-seed!')
+  // Seed Akun Ketua Komisariat UIN
+  if (uin) {
+    await prisma.user.upsert({
+      where: { email: 'ketuauin@pmii.or.id' },
+      update: {},
+      create: {
+        name: 'Ketua Komisariat UIN',
+        email: 'ketuauin@pmii.or.id',
+        password: adminPassword,
+        role: 'KETUA_KOMISARIAT',
+        komisariatId: uin.id,
+        statusApproval: 'APPROVED'
+      }
+    })
+  }
+
+  // Seed Akun Ketua Rayon Tarbiyah
+  const rayonTarbiyah = await prisma.rayon.findFirst({ where: { nama: 'Rayon Tarbiyah' } })
+  if (rayonTarbiyah) {
+    await prisma.user.upsert({
+      where: { email: 'ketuatarbiyah@pmii.or.id' },
+      update: {},
+      create: {
+        name: 'Ketua Rayon Tarbiyah',
+        email: 'ketuatarbiyah@pmii.or.id',
+        password: adminPassword,
+        role: 'KETUA_RAYON',
+        komisariatId: uin?.id,
+        rayonId: rayonTarbiyah.id,
+        statusApproval: 'APPROVED'
+      }
+    })
+  }
+
+  // Seed Akun Anggota Biasa
+  if (rayonTarbiyah) {
+    await prisma.user.upsert({
+      where: { email: 'anggota@pmii.or.id' },
+      update: {},
+      create: {
+        name: 'Anggota Tarbiyah',
+        email: 'anggota@pmii.or.id',
+        password: adminPassword,
+        role: 'ANGGOTA',
+        komisariatId: uin?.id,
+        rayonId: rayonTarbiyah.id,
+        statusApproval: 'APPROVED'
+      }
+    })
+  }
+
+  console.log('Semua akun test berhasil di-seed!')
 }
 
 main()
