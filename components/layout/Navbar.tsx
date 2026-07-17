@@ -26,6 +26,7 @@ export const navLinks = [
   { href: '/surat', label: 'Surat', submenu: [
     { href: '/surat/pengajuan-surat', label: 'Pengajuan Surat' },
     { href: '/surat/pengajuan-sk', label: 'Pengajuan SK' },
+    { href: '/surat/cek-ttd', label: 'Cek TTD Digital' },
   ]},
   { href: '/konsultasi-hukum', label: 'Konsultasi Hukum' },
 ];
