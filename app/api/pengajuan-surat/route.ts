@@ -2,16 +2,18 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { getScopeFilter } from '@/lib/scope';
 
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     
-    let where = {};
+    let where: any = getScopeFilter(session);
     const role = (session.user as any).role;
-    if (role === 'USER' || role === 'ADMIN_KOMISARIAT') {
-      where = { userId: (session.user as any).id };
+    // Jika ANGGOTA biasa, hanya bisa melihat pengajuannya sendiri
+    if (role === 'ANGGOTA') {
+      where.userId = (session.user as any).id;
     }
 
     const surat = await prisma.pengajuanSurat.findMany({ where, orderBy: { createdAt: 'desc' } });
@@ -38,8 +40,11 @@ export async function POST(request: Request) {
         asalStruktur: data.asalStruktur,
         jenisSurat: data.jenisSurat,
         perihal: data.perihal,
-        tujuanSurat: data.tujuanSurat,
-        keterangan: data.keterangan
+        keterangan: data.keterangan,
+        tujuanScope: data.tujuanScope || 'PC',
+        tujuanId: data.tujuanId || null,
+        komisariatId: (session.user as any).komisariatId || null,
+        rayonId: (session.user as any).rayonId || null
       }
     });
     return NextResponse.json(surat, { status: 201 });
