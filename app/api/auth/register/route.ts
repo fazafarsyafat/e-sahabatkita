@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs';
 export async function POST(request: Request) {
   try {
     const data = await request.json();
+    const {
       name, email, password, noTelepon, 
       tempatLahir, tanggalLahir, jenisKelamin, alamat,
       asalKampus, fakultas, jurusan, tahunMasuk,
