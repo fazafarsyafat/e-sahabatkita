@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import bcrypt from 'bcryptjs';
+import { getScopeFilter } from '@/lib/scope';
 
 export async function GET(request: Request) {
   try {
@@ -19,15 +20,17 @@ export async function GET(request: Request) {
     const jenjangFilter = searchParams.get('jenjang');
     const komisariatFilter = searchParams.get('komisariat');
 
+    const scopeFilter = getScopeFilter(session);
+
     const kaders = await prisma.kader.findMany({
       where: {
+        ...scopeFilter,
         OR: [
           { namaLengkap: { contains: search, mode: 'insensitive' } },
           { nia: { contains: search, mode: 'insensitive' } },
         ],
-        // Kita bisa tambahkan filter jenjang/komisariat di sini nanti jika perlu
       },
-      include: { user: true },
+      include: { user: true, komisariat: true, rayon: true },
       orderBy: { createdAt: 'desc' }
     });
 
@@ -75,7 +78,7 @@ export async function POST(request: Request) {
           name: data.namaLengkap,
           email: data.email,
           password: hashedPassword,
-          role: 'USER',
+          role: 'ANGGOTA',
           statusApproval: 'APPROVED'
         }
       });
@@ -96,8 +99,8 @@ export async function POST(request: Request) {
         fakultas: data.fakultas,
         jurusan: data.jurusan,
         tahunMasuk: data.tahunMasuk ? parseInt(data.tahunMasuk) : null,
-        rayon: data.rayon,
-        komisariat: data.komisariat,
+        komisariatId: data.komisariatId || null,
+        rayonId: data.rayonId || null,
         statusMapaba: data.statusMapaba || false,
         statusPKD: data.statusPKD || false,
         statusPKL: data.statusPKL || false,
