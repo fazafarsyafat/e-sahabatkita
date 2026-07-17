@@ -7,10 +7,9 @@ export async function GET() {
   try {
     const totalKader = await prisma.kader.count();
     
-    // Hitung unik komisariat & rayon dari tabel kader
-    const kaders = await prisma.kader.findMany({ select: { komisariat: true, rayon: true } });
-    const setKomisariat = new Set(kaders.map(k => k.komisariat).filter(k => k && k.trim() !== ''));
-    const setRayon = new Set(kaders.map(k => k.rayon).filter(r => r && r.trim() !== ''));
+    // Hitung total komisariat & rayon
+    const totalKomisariat = await prisma.komisariat.count();
+    const totalRayon = await prisma.rayon.count();
     
     // Surat & Arsip
     const totalSuratKeluar = await prisma.surat.count({ where: { jenis: 'KELUAR' } });
@@ -18,8 +17,8 @@ export async function GET() {
     
     return NextResponse.json({
       totalKader,
-      totalKomisariat: setKomisariat.size,
-      totalRayon: setRayon.size,
+      totalKomisariat,
+      totalRayon,
       suratKeluar: totalSuratKeluar,
       arsipAktif: totalArsip,
     });
