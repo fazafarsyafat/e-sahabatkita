@@ -2,16 +2,17 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { getScopeFilter } from '@/lib/scope';
 
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    let where = {};
+    let where: any = getScopeFilter(session);
     const role = (session.user as any).role;
-    if (role === 'USER' || role === 'ADMIN_KOMISARIAT') {
-      where = { userId: (session.user as any).id };
+    if (role === 'ANGGOTA' || role === 'KETUA_KOMISARIAT' || role === 'SEKRETARIS_KOMISARIAT' || role === 'KETUA_RAYON' || role === 'SEKRETARIS_RAYON') {
+      where.userId = (session.user as any).id;
     }
 
     const sk = await prisma.pengajuanSK.findMany({ where, orderBy: { createdAt: 'desc' } });
@@ -39,7 +40,8 @@ export async function POST(request: Request) {
         periode: data.periode,
         ketuaTerpilih: data.ketuaTerpilih,
         asalStruktur: data.asalStruktur,
-        fileSyaratUrl: data.fileSyaratUrl
+        fileSyaratUrl: data.fileSyaratUrl,
+        komisariatId: (session.user as any).komisariatId || null
       }
     });
     return NextResponse.json(sk, { status: 201 });

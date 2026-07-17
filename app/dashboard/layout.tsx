@@ -29,7 +29,7 @@ const navItems: NavItem[] = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard }, // Accessible by ALL
   
   // ================= ADMIN & PENGURUS =================
-  { href: '/dashboard/kader', label: 'Database Kader', icon: Users, roles: ['SUPER_ADMIN', 'ADMIN_CABANG', 'ADMIN_KOMISARIAT'] },
+  { href: '/dashboard/kader', label: 'Database Kader', icon: Users, roles: ['SUPER_ADMIN', 'ADMIN_CABANG', 'KETUA_KOMISARIAT', 'SEKRETARIS_KOMISARIAT'] },
   {
     href: '/dashboard/surat/arsip', label: 'Administrasi Surat', icon: FileText,
     children: [
@@ -49,15 +49,15 @@ const navItems: NavItem[] = [
       { href: '/dashboard/pengajuan/sk', label: 'Pengajuan SK' },
       { href: '/dashboard/pengajuan/surat', label: 'Pengajuan Surat' },
     ],
-    roles: ['USER', 'ADMIN_KOMISARIAT'] // Kader biasa dan Komisariat bisa mengajukan
+    roles: ['ANGGOTA', 'KETUA_KOMISARIAT', 'SEKRETARIS_KOMISARIAT', 'KETUA_RAYON', 'SEKRETARIS_RAYON'] // Semua user bisa mengajukan
   },
   {
     href: '/dashboard/kaderisasi', label: 'Manajemen Kaderisasi', icon: BookOpen,
-    roles: ['SUPER_ADMIN', 'ADMIN_CABANG', 'ADMIN_KOMISARIAT'] // Hanya Admin yang bisa mengelola
+    roles: ['SUPER_ADMIN', 'ADMIN_CABANG', 'KETUA_KOMISARIAT', 'SEKRETARIS_KOMISARIAT'] // Hanya Admin yang bisa mengelola
   },
   {
     href: '/dashboard/kaderisasi-ku', label: 'Kaderisasi Saya', icon: BookOpen,
-    roles: ['USER', 'ADMIN_KOMISARIAT'] // Dasbor internal untuk daftar & presensi
+    roles: ['ANGGOTA', 'KETUA_KOMISARIAT', 'SEKRETARIS_KOMISARIAT', 'KETUA_RAYON', 'SEKRETARIS_RAYON'] // Dasbor internal untuk daftar & presensi
   },
   { href: '/dashboard/agenda', label: 'Agenda', icon: Calendar },
 ];

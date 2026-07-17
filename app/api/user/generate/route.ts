@@ -37,7 +37,7 @@ export async function POST(request: Request) {
         name: kader.namaLengkap,
         email: finalEmail,
         password: hashedPassword,
-        role: 'USER',
+        role: 'ANGGOTA',
         statusApproval: 'APPROVED'
       }
     });

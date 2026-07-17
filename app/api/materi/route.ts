@@ -22,8 +22,8 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || !['SUPER_ADMIN', 'ADMIN_CABANG', 'ADMIN_KOMISARIAT'].includes((session.user as any).role)) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!session || !['SUPER_ADMIN', 'ADMIN_CABANG', 'KETUA_KOMISARIAT', 'SEKRETARIS_KOMISARIAT'].includes((session.user as any).role)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
     const body = await request.json();

@@ -6,7 +6,7 @@ import { authOptions } from '@/lib/auth';
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || (session.user as any).role === 'USER') {
+    if (!session || (session.user as any).role === 'ANGGOTA') {
       return NextResponse.json({ error: 'Hanya Admin yang berhak' }, { status: 403 });
     }
 
@@ -32,7 +32,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || (session.user as any).role === 'USER') {
+    if (!session || (session.user as any).role === 'ANGGOTA') {
       return NextResponse.json({ error: 'Hanya Admin yang berhak' }, { status: 403 });
     }
 

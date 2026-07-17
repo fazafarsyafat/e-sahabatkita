@@ -28,8 +28,8 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || (session.user as any).role === 'USER') {
-      return NextResponse.json({ error: 'Hanya Admin yang berhak membuat program' }, { status: 403 });
+    if (!session || (session.user as any).role === 'ANGGOTA') {
+      return NextResponse.json({ error: 'Hanya Admin yang berhak' }, { status: 403 });
     }
 
     const data = await request.json();
