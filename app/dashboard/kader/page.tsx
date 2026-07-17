@@ -422,8 +422,11 @@ export default function KaderPage() {
                                   onChange={(e) => handleRoleChange(k.user.id, e.target.value)}
                                   className="text-xs bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md py-1.5 px-2 cursor-pointer font-semibold text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
                                 >
-                                  <option value="USER">👦 Anggota</option>
-                                  <option value="ADMIN_KOMISARIAT">🎓 Admin PK</option>
+                                  <option value="ANGGOTA">👦 Anggota</option>
+                                  <option value="SEKRETARIS_RAYON">📝 Sek. Rayon</option>
+                                  <option value="KETUA_RAYON">🎓 Ketua Rayon</option>
+                                  <option value="SEKRETARIS_KOMISARIAT">📝 Sek. Komisariat</option>
+                                  <option value="KETUA_KOMISARIAT">🎓 Ketua Komisariat</option>
                                   <option value="ADMIN_CABANG">🏛️ Admin PC</option>
                                   <option value="SUPER_ADMIN">👑 Super Admin</option>
                                 </select>
