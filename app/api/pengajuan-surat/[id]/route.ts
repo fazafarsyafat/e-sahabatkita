@@ -29,10 +29,12 @@ export async function PUT(request: Request, { params }: { params: { id: string }
            jenis: 'KELUAR',
            kategori: updated.jenisSurat,
            perihal: updated.perihal,
-           tujuan: updated.tujuanSurat || updated.namaPemohon,
+           tujuan: updated.namaPemohon,
            tanggal: new Date(),
            fileUrl: data.fileBalasanUrl,
-           keterangan: `Diterbitkan secara otomatis untuk pemohon: ${updated.namaPemohon} (${updated.asalStruktur}) dengan Nomor Resi: ${updated.nomorResi}`
+           keterangan: `Diterbitkan secara otomatis untuk pemohon: ${updated.namaPemohon} (${updated.asalStruktur}) dengan Nomor Resi: ${updated.nomorResi}`,
+           komisariatId: updated.komisariatId,
+           rayonId: updated.rayonId
          }
        });
     }
