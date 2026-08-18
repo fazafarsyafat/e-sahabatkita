@@ -133,7 +133,7 @@ export default function DashboardPage() {
       .then(data => setUpcomingAgenda(data))
       .catch(console.error);
 
-    if (user?.role === 'ANGGOTA' || user?.role === 'KETUA_KOMISARIAT' || user?.role === 'SEKRETARIS_KOMISARIAT' || user?.role === 'KETUA_RAYON' || user?.role === 'SEKRETARIS_RAYON') {
+    if (user?.role === 'ANGGOTA' || user?.role === 'ADMIN_KOMISARIAT' || user?.role === 'ADMIN_RAYON') {
       fetch('/api/user/pengajuan', { cache: 'no-store' })
         .then(res => res.json())
         .then(data => {
@@ -319,7 +319,7 @@ export default function DashboardPage() {
         </motion.div>
 
         {/* Riwayat Pengajuan Pribadi (Bagi Kader) */}
-        {(user?.role === 'ANGGOTA' || user?.role === 'KETUA_KOMISARIAT' || user?.role === 'SEKRETARIS_KOMISARIAT' || user?.role === 'KETUA_RAYON' || user?.role === 'SEKRETARIS_RAYON') && (
+        {(user?.role === 'ANGGOTA' || user?.role === 'ADMIN_KOMISARIAT' || user?.role === 'ADMIN_RAYON') && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

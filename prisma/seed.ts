@@ -71,7 +71,7 @@ async function main() {
     }
   })
 
-  // Seed Akun Ketua Komisariat UIN
+  // Seed Akun Admin Komisariat UIN
   if (uin) {
     await prisma.user.upsert({
       where: { email: 'ketuauin@pmii.or.id' },
@@ -80,14 +80,14 @@ async function main() {
         name: 'Ketua Komisariat UIN',
         email: 'ketuauin@pmii.or.id',
         password: adminPassword,
-        role: 'KETUA_KOMISARIAT',
+        role: 'ADMIN_KOMISARIAT',
         komisariatId: uin.id,
         statusApproval: 'APPROVED'
       }
     })
   }
 
-  // Seed Akun Ketua Rayon Tarbiyah
+  // Seed Akun Admin Rayon Tarbiyah
   const rayonTarbiyah = await prisma.rayon.findFirst({ where: { nama: 'Rayon Tarbiyah' } })
   if (rayonTarbiyah) {
     await prisma.user.upsert({
@@ -97,7 +97,7 @@ async function main() {
         name: 'Ketua Rayon Tarbiyah',
         email: 'ketuatarbiyah@pmii.or.id',
         password: adminPassword,
-        role: 'KETUA_RAYON',
+        role: 'ADMIN_RAYON',
         komisariatId: uin?.id,
         rayonId: rayonTarbiyah.id,
         statusApproval: 'APPROVED'

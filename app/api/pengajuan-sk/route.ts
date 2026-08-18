@@ -11,7 +11,7 @@ export async function GET(request: Request) {
 
     let where: any = getScopeFilter(session);
     const role = (session.user as any).role;
-    if (role === 'ANGGOTA' || role === 'KETUA_KOMISARIAT' || role === 'SEKRETARIS_KOMISARIAT' || role === 'KETUA_RAYON' || role === 'SEKRETARIS_RAYON') {
+    if (role === 'ANGGOTA' || role === 'ADMIN_KOMISARIAT' || role === 'ADMIN_RAYON') {
       where.userId = (session.user as any).id;
     }
 

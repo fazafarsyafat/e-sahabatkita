@@ -26,12 +26,12 @@ export function getScopeFilter(session: Session | null) {
       // PC PMII melihat semua data
       return {};
       
-    case "SEKRETARIS_KOMISARIAT":
+    case "ADMIN_KOMISARIAT":
       // Melihat data semua rayon di bawah komisariatnya, serta data komisariatnya sendiri
       if (!user.komisariatId) return { id: "INVALID_KOMISARIAT" };
       return { komisariatId: user.komisariatId };
       
-    case "SEKRETARIS_RAYON":
+    case "ADMIN_RAYON":
       // Hanya melihat data rayonnya sendiri
       if (!user.komisariatId || !user.rayonId) return { id: "INVALID_RAYON" };
       return { 
