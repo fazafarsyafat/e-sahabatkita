@@ -5,6 +5,43 @@ import { Calendar, User, ArrowLeft, Eye } from 'lucide-react';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import ShareButton from './ShareButton';
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const berita = await prisma.berita.findUnique({
+    where: { slug: params.slug },
+  });
+
+  if (!berita) return {};
+
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.pcpmiikabbandung.org';
+  const imageUrl = berita.gambarSampul || `${baseUrl}/logo-wide.png`;
+
+  return {
+    title: `${berita.judul} | PC PMII Kabupaten Bandung`,
+    description: berita.ringkasan,
+    openGraph: {
+      title: berita.judul,
+      description: berita.ringkasan,
+      url: `${baseUrl}/berita/${berita.slug}`,
+      siteName: 'PC PMII Kabupaten Bandung',
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: berita.judul,
+        },
+      ],
+      type: 'article',
+      publishedTime: (berita.publishedAt || berita.createdAt).toISOString(),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: berita.judul,
+      description: berita.ringkasan,
+      images: [imageUrl],
+    },
+  };
+}
 
 export default async function BacaBeritaPage({ params }: { params: { slug: string } }) {
   const berita = await prisma.berita.findUnique({
