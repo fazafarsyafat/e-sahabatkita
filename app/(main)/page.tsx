@@ -481,7 +481,7 @@ export default function HomePage() {
                 <div className="p-5">
                   <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-4 line-clamp-2">{featuredBerita.ringkasan}</p>
                   <div className="flex items-center justify-between">
-                    <div className="text-xs text-gray-400">{formatDate(featuredBerita.createdAt)} · {featuredBerita.viewCount} views</div>
+                    <div className="text-xs text-gray-400">{formatDate(featuredBerita.publishedAt || featuredBerita.createdAt)} · {featuredBerita.viewCount} views</div>
                     <Link href={`/berita/${featuredBerita.slug}`} className="btn-primary btn-sm text-xs py-1.5 px-3">Baca <ChevronRight size={12} /></Link>
                   </div>
                 </div>
@@ -504,7 +504,7 @@ export default function HomePage() {
                   <div className="flex-1 min-w-0">
                     <span className="badge badge-blue text-xs mb-1">{b.kategori}</span>
                     <h4 className="font-semibold text-gray-900 dark:text-white text-sm leading-tight line-clamp-2 group-hover:text-primary-600 transition-colors">{b.judul}</h4>
-                    <div className="text-xs text-gray-400 mt-1">{formatDateShort(b.createdAt)}</div>
+                    <div className="text-xs text-gray-400 mt-1">{formatDateShort(b.publishedAt || b.createdAt)}</div>
                   </div>
                 </motion.div>
               ))}

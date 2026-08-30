@@ -66,7 +66,7 @@ export default function BeritaPage() {
 
                 <div className="flex items-center justify-between mt-auto">
                   <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
-                    <span className="flex items-center gap-1.5"><Calendar size={14} /> {formatDate(berita.createdAt)}</span>
+                    <span className="flex items-center gap-1.5"><Calendar size={14} /> {formatDate(berita.publishedAt || berita.createdAt)}</span>
                     <span className="flex items-center gap-1.5"><Eye size={14} /> {berita.viewCount}</span>
                   </div>
                   <Link href={`/berita/${berita.slug}`} className="text-primary-600 dark:text-primary-400 p-2 bg-primary-50 dark:bg-primary-900/20 rounded-full group-hover:bg-primary-600 group-hover:text-white transition-colors">

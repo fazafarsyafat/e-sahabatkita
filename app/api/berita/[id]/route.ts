@@ -47,6 +47,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         kategori: data.kategori,
         gambarSampul: data.gambarSampul,
         isPublished: data.isPublished,
+        publishedAt: data.publishedAt !== undefined ? (data.publishedAt ? new Date(data.publishedAt) : null) : undefined,
       }
     });
 

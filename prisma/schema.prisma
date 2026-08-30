@@ -191,6 +191,9 @@ model Berita {
   komisariat   Komisariat? @relation(fields: [komisariatId], references: [id], onDelete: Cascade)
   rayon        Rayon?      @relation(fields: [rayonId], references: [id], onDelete: Cascade)
 
+  publishedAt  DateTime?
+
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

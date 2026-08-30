@@ -25,6 +25,7 @@ export default function BeritaPage() {
   const [kategori, setKategori] = useState('Umum');
   const [gambarSampul, setGambarSampul] = useState('');
   const [isPublished, setIsPublished] = useState(true);
+  const [publishedAt, setPublishedAt] = useState('');
   const [isUploading, setIsUploading] = useState(false);
 
   // Fungsi memuat data berita dari API
@@ -55,6 +56,17 @@ export default function BeritaPage() {
       setKategori(berita.kategori);
       setGambarSampul(berita.gambarSampul || '');
       setIsPublished(berita.isPublished);
+      if (berita.publishedAt || berita.createdAt) {
+         const d = new Date(berita.publishedAt || berita.createdAt);
+         const yyyy = d.getFullYear();
+         const mm = String(d.getMonth() + 1).padStart(2, '0');
+         const dd = String(d.getDate()).padStart(2, '0');
+         const hh = String(d.getHours()).padStart(2, '0');
+         const min = String(d.getMinutes()).padStart(2, '0');
+         setPublishedAt(`${yyyy}-${mm}-${dd}T${hh}:${min}`);
+      } else {
+         setPublishedAt('');
+      }
     } else {
       setJudul('');
       setKonten('');
@@ -62,6 +74,14 @@ export default function BeritaPage() {
       setKategori('Umum');
       setGambarSampul('');
       setIsPublished(true);
+      
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      const hh = String(now.getHours()).padStart(2, '0');
+      const min = String(now.getMinutes()).padStart(2, '0');
+      setPublishedAt(`${yyyy}-${mm}-${dd}T${hh}:${min}`);
     }
     setShowModal(true);
   };
@@ -73,7 +93,12 @@ export default function BeritaPage() {
       return;
     }
     
-    const payload = { judul, konten, ringkasan, kategori, gambarSampul, isPublished };
+    let publishedAtIso = undefined;
+    if (publishedAt) {
+      publishedAtIso = new Date(publishedAt).toISOString();
+    }
+    
+    const payload = { judul, konten, ringkasan, kategori, gambarSampul, isPublished, publishedAt: publishedAtIso };
     const url = selectedBerita ? `/api/berita/${selectedBerita.id}` : '/api/berita';
     const method = selectedBerita ? 'PUT' : 'POST';
 
@@ -259,7 +284,7 @@ export default function BeritaPage() {
                 
                 <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100 dark:border-gray-800">
                   <div className="text-[10px] text-gray-400">
-                    {formatDate(berita.createdAt)}
+                    {formatDate(berita.publishedAt || berita.createdAt)}
                   </div>
                   <div className="flex items-center gap-1">
                     <button onClick={() => openModal(berita)} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 transition-colors" title="Edit">
@@ -338,6 +363,12 @@ export default function BeritaPage() {
                         <p className="text-[10px] text-gray-500 mt-2 leading-relaxed">
                           {isPublished ? 'Berita akan langsung tampil di halaman depan (publik) setelah disimpan.' : 'Berita disembunyikan dari masyarakat, hanya tersimpan sebagai coretan.'}
                         </p>
+                      </div>
+
+                      <div>
+                        <label className="label">Tanggal & Waktu Rilis</label>
+                        <input type="datetime-local" className="input text-sm" value={publishedAt} onChange={(e) => setPublishedAt(e.target.value)} required={isPublished} />
+                        <p className="text-[10px] text-gray-500 mt-1 leading-relaxed">Berita dapat diatur untuk rilis di masa depan.</p>
                       </div>
                     </div>
 

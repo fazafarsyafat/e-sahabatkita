@@ -29,11 +29,18 @@ export async function GET(request: Request) {
     const whereClause: any = {};
     if (publishedOnly) {
       whereClause.isPublished = true;
+      whereClause.OR = [
+        { publishedAt: null },
+        { publishedAt: { lte: new Date() } }
+      ];
     }
 
     const berita = await prisma.berita.findMany({
       where: whereClause,
-      orderBy: { createdAt: 'desc' },
+      orderBy: [
+        { publishedAt: 'desc' },
+        { createdAt: 'desc' }
+      ],
       take: limit ? parseInt(limit) : undefined,
       include: {
         author: {
@@ -82,6 +89,7 @@ export async function POST(request: Request) {
         kategori: data.kategori || 'Umum',
         gambarSampul: data.gambarSampul || null,
         isPublished: data.isPublished !== undefined ? data.isPublished : true,
+        publishedAt: data.publishedAt ? new Date(data.publishedAt) : null,
         authorId: (session.user as any).id, // Tarik langsung ID penulis dari sesi login
       }
     });

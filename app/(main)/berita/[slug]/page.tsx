@@ -36,7 +36,7 @@ export default async function BacaBeritaPage({ params }: { params: { slug: strin
           <div className="p-6 md:p-12">
             <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6">
               <span className="badge badge-blue font-bold px-3 py-1 bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400 rounded-full">{berita.kategori}</span>
-              <span className="flex items-center gap-1.5"><Calendar size={16} /> {formatDate(berita.createdAt)}</span>
+              <span className="flex items-center gap-1.5"><Calendar size={16} /> {formatDate(berita.publishedAt || berita.createdAt)}</span>
               <span className="flex items-center gap-1.5"><User size={16} /> Ditulis oleh: {berita.author?.name || 'Administrator'}</span>
             </div>
             
