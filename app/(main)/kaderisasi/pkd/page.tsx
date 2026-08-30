@@ -110,7 +110,7 @@ export default function PkdMateriPage() {
                     </div>
                     <div>
                       <h3 className="font-bold text-gray-900 dark:text-white text-lg">{program.jenis} {program.angkatan}</h3>
-                      <p className="text-xs text-gray-500">{program.komisariat || 'Tingkat Cabang'}</p>
+                      <p className="text-xs text-gray-500">{program.komisariat?.nama || 'Tingkat Cabang'}</p>
                     </div>
                   </div>
                   <span className={cn('badge text-[10px]', program.status === 'OPEN' ? 'badge-blue' : program.status === 'ONGOING' ? 'badge-gold' : 'badge-green')}>

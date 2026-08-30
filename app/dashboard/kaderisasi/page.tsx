@@ -279,7 +279,7 @@ export default function AdminKaderisasiPage() {
                     </div>
                     <div>
                       <div className="font-bold text-gray-900 dark:text-white text-sm">{item.jenis} {item.angkatan}</div>
-                      <div className="text-xs text-gray-400">{item.komisariat || 'Semua Wilayah'}</div>
+                      <div className="text-xs text-gray-400">{item.komisariat?.nama || 'Semua Wilayah'}</div>
                     </div>
                   </div>
                 </div>
