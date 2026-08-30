@@ -50,10 +50,10 @@ export function Navbar() {
       <div className="container-lg">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3 max-w-[70%]">
             <img src="/logo-wide.png" alt="E-Sahabat" className="hidden sm:block h-12 lg:h-14 w-auto object-contain" />
-            <img src="/logo-square.png" alt="E-Sahabat" className="sm:hidden h-10 w-auto object-contain" />
-            <span className="sm:hidden text-white font-bold text-lg tracking-tight">E-SAHABAT</span>
+            <img src="/logo-square.png" alt="E-Sahabat" className="sm:hidden h-10 w-auto object-contain flex-shrink-0" />
+            <span className="sm:hidden text-white font-bold text-sm tracking-tight leading-tight line-clamp-2">PC PMII<br/>Kabupaten Bandung</span>
           </Link>
 
           {/* Desktop Nav */}
