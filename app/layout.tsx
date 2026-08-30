@@ -9,12 +9,12 @@ import { Toaster } from 'react-hot-toast';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'E-SAHABAT — Sistem Administrasi, Hub Arsip, dan Basis Anggota Terpadu | PC PMII Kabupaten Bandung',
-  description: 'E-SAHABAT adalah pusat layanan digital PC PMII Kabupaten Bandung yang mengintegrasikan administrasi organisasi, pengelolaan arsip, basis data kader, serta proses kaderisasi secara efektif, transparan, dan berkelanjutan.',
+  title: 'PC PMII Kabupaten Bandung',
+  description: 'Sistem Administrasi, Hub Arsip, dan Basis Anggota Terpadu PC PMII Kabupaten Bandung',
   keywords: ['PMII', 'Kabupaten Bandung', 'administrasi', 'organisasi', 'kaderisasi', 'E-SAHABAT'],
   authors: [{ name: 'PC PMII Kabupaten Bandung' }],
   openGraph: {
-    title: 'E-SAHABAT — PC PMII Kabupaten Bandung',
+    title: 'PC PMII Kabupaten Bandung',
     description: 'Sistem Administrasi, Hub Arsip, dan Basis Anggota Terpadu',
     type: 'website',
   },
