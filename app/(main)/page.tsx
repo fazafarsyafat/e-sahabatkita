@@ -9,7 +9,7 @@ import {
   BarChart3, ArrowRight, Menu, X, Sun, Moon, ExternalLink,
   CheckCircle, Star, ChevronRight, MapPin, Phone, Mail,
   Download, HelpCircle, Newspaper, Image as ImageIcon, Award,
-  Globe, Lock, Cpu, ChevronDown
+  Globe, Lock, Cpu, ChevronDown, Share2
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { mockBerita, mockAgenda } from '@/lib/mock-data';
@@ -118,8 +118,17 @@ export default function HomePage() {
       .catch(console.error);
   }, []);
 
-  const featuredBerita = beritas.length > 0 ? beritas[0] : null;
-  const otherBerita = beritas.slice(1, 4);
+  const handleShare = async (slug: string, judul: string) => {
+    const url = `${window.location.origin}/berita/${slug}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: judul, url: url });
+      } catch (err) { console.error('Share failed', err); }
+    } else {
+      navigator.clipboard.writeText(url);
+      alert('Tautan berita disalin ke clipboard!');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950">
@@ -459,65 +468,68 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-6">
-            {featuredBerita && (
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {beritas.map((berita, i) => (
               <motion.div
+                key={berita.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="lg:col-span-2 card overflow-hidden group"
+                transition={{ delay: i * 0.1 }}
+                className="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col"
               >
-                <div className="relative h-52 bg-gradient-to-br from-primary-500 to-primary-700 overflow-hidden">
-                  {featuredBerita.gambarSampul ? (
-                    <img src={featuredBerita.gambarSampul} alt={featuredBerita.judul} className="absolute inset-0 w-full h-full object-cover" />
+                {/* Thumbnail */}
+                <div className="relative h-40 overflow-hidden bg-gray-200 dark:bg-gray-800">
+                  {berita.gambarSampul ? (
+                    <img 
+                      src={berita.gambarSampul} 
+                      alt={berita.judul} 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
                   ) : (
-                    <div className="absolute inset-0 flex items-center justify-center opacity-20">
-                      <Newspaper size={80} className="text-white" />
+                    <div className="w-full h-full flex items-center justify-center text-gray-400 group-hover:scale-105 transition-transform duration-500">
+                      <Newspaper size={40} className="opacity-20" />
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
-                  <div className="absolute top-3 left-3 z-20 badge badge-gold">⭐ Featured</div>
-                  <div className="absolute bottom-4 left-4 right-4 z-20">
-                    <span className="badge badge-green text-xs mb-2">{featuredBerita.kategori}</span>
-                    <h3 className="text-white font-bold text-lg leading-tight line-clamp-2">{featuredBerita.judul}</h3>
+                  <div className="absolute top-3 left-3 bg-primary-600 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-md">
+                    {berita.kategori}
                   </div>
                 </div>
-                <div className="p-5">
-                  <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-4 line-clamp-2">{featuredBerita.ringkasan}</p>
-                  <div className="flex items-center justify-between">
-                    <div className="text-xs text-gray-400">{formatDate(featuredBerita.publishedAt || featuredBerita.createdAt)} · {featuredBerita.viewCount} views</div>
-                    <Link href={`/berita/${featuredBerita.slug}`} className="btn-primary btn-sm text-xs py-1.5 px-3">Baca <ChevronRight size={12} /></Link>
+
+                {/* Content */}
+                <div className="p-5 flex flex-col flex-1">
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">
+                    <Link href={`/berita/${berita.slug}`}>
+                      {berita.judul}
+                    </Link>
+                  </h3>
+                  
+                  <p className="text-gray-500 dark:text-gray-400 text-xs mb-4 line-clamp-2 flex-1">
+                    {berita.ringkasan}
+                  </p>
+
+                  <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-100 dark:border-gray-800">
+                    <div className="text-[10px] text-gray-400">
+                      {formatDateShort(berita.publishedAt || berita.createdAt)}
+                    </div>
+                    <div className="flex gap-2">
+                      <button onClick={() => handleShare(berita.slug, berita.judul)} className="p-1.5 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-gray-500 transition-colors" title="Bagikan">
+                        <Share2 size={14} />
+                      </button>
+                      <Link href={`/berita/${berita.slug}`} className="p-1.5 bg-primary-50 dark:bg-primary-900/20 hover:bg-primary-600 hover:text-white rounded-full text-primary-600 transition-colors" title="Baca Berita">
+                        <ArrowRight size={14} />
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </motion.div>
+            ))}
+            
+            {beritas.length === 0 && (
+              <div className="col-span-full text-center py-10 border border-dashed rounded-2xl border-gray-200 dark:border-gray-800 text-gray-400">
+                Belum ada berita yang dipublikasikan.
+              </div>
             )}
-
-            <div className="space-y-4">
-              {otherBerita.map((b, i) => (
-                <motion.div
-                  key={b.id}
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="card p-4 flex gap-3 items-start group hover:border-primary-200 dark:hover:border-primary-800"
-                >
-                  <div className="w-14 h-14 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden">
-                    {b.gambarSampul ? (
-                      <img src={b.gambarSampul} alt={b.judul} className="w-full h-full object-cover" />
-                    ) : (
-                      <Newspaper size={18} className="text-primary-500" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <span className="badge badge-blue text-xs mb-1">{b.kategori}</span>
-                    <h4 className="font-semibold text-gray-900 dark:text-white text-sm leading-tight line-clamp-2 group-hover:text-primary-600 transition-colors">{b.judul}</h4>
-                    <div className="text-xs text-gray-400 mt-1">{formatDateShort(b.publishedAt || b.createdAt)}</div>
-                  </div>
-                </motion.div>
-              ))}
-              <Link href="/publikasi/berita" className="btn-outline w-full justify-center text-sm">Lihat Semua Berita</Link>
-            </div>
           </div>
         </div>
       </section>

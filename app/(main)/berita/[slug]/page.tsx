@@ -4,6 +4,7 @@ import { formatDate } from '@/lib/utils';
 import { Calendar, User, ArrowLeft, Eye } from 'lucide-react';
 import Link from 'next/link';
 import { Metadata } from 'next';
+import ShareButton from './ShareButton';
 
 export default async function BacaBeritaPage({ params }: { params: { slug: string } }) {
   const berita = await prisma.berita.findUnique({
@@ -34,10 +35,13 @@ export default async function BacaBeritaPage({ params }: { params: { slug: strin
           )}
           
           <div className="p-6 md:p-12">
-            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6">
-              <span className="badge badge-blue font-bold px-3 py-1 bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400 rounded-full">{berita.kategori}</span>
-              <span className="flex items-center gap-1.5"><Calendar size={16} /> {formatDate(berita.publishedAt || berita.createdAt)}</span>
-              <span className="flex items-center gap-1.5"><User size={16} /> Ditulis oleh: {berita.author?.name || 'Administrator'}</span>
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                <span className="badge badge-blue font-bold px-3 py-1 bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400 rounded-full">{berita.kategori}</span>
+                <span className="flex items-center gap-1.5"><Calendar size={16} /> {formatDate(berita.publishedAt || berita.createdAt)}</span>
+                <span className="flex items-center gap-1.5"><User size={16} /> Ditulis oleh: {berita.author?.name || 'Administrator'}</span>
+              </div>
+              <ShareButton slug={berita.slug} judul={berita.judul} />
             </div>
             
             <h1 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white leading-tight mb-10">
