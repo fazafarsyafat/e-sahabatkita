@@ -72,11 +72,16 @@ export default function AgendaPage() {
     setStatus(agenda.status);
     setDeskripsi(agenda.deskripsi || '');
     
-    // Convert UTC to local input format
+    // Use local time instead of UTC to populate form
     const d = new Date(agenda.waktuPelaksanaan);
-    setTanggal(d.toISOString().split('T')[0]);
-    // Fix timezone difference for time input
-    setWaktu(d.toTimeString().slice(0, 5));
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    setTanggal(`${yyyy}-${mm}-${dd}`);
+    
+    const hh = String(d.getHours()).padStart(2, '0');
+    const min = String(d.getMinutes()).padStart(2, '0');
+    setWaktu(`${hh}:${min}`);
     
     setShowModal(true);
   };
@@ -89,7 +94,10 @@ export default function AgendaPage() {
     }
 
     try {
-      const dateTimeString = `${tanggal}T${waktu}:00`;
+      // Create date object in local timezone, then convert to ISO UTC string for server
+      const localDate = new Date(`${tanggal}T${waktu}:00`);
+      const dateTimeString = localDate.toISOString();
+      
       const url = editingId ? `/api/agenda/${editingId}` : '/api/agenda';
       const method = editingId ? 'PUT' : 'POST';
 
