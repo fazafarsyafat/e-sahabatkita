@@ -70,9 +70,10 @@ export default function HomePage() {
   const [mounted, setMounted] = useState(false);
   
   const [stats, setStats] = useState({
-    totalKader: 0,
-    totalKomisariat: 0,
-    totalRayon: 0,
+    // TODO: Hapus hardcode ini dan uncomment fetch di bawah jika data sudah siap untuk realtime
+    totalKader: 1109,
+    totalKomisariat: 6,
+    totalRayon: 8,
     suratKeluar: 0,
     arsipAktif: 0
   });
@@ -90,12 +91,15 @@ export default function HomePage() {
   
 
   useEffect(() => {
+    // TODO: Uncomment ini untuk mengaktifkan kembali data realtime dari API
+    /*
     fetch('/api/public/stats', { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         if (!data.error) setStats(data);
       })
       .catch(console.error);
+    */
 
     fetch('/api/berita?published=true&limit=4', { cache: 'no-store' })
       .then(res => res.json())
