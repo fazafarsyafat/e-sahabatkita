@@ -5,10 +5,9 @@ import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 
 const tabs = [
-  { href: '/kaderisasi', label: 'Borang & Presensi' },
-  { href: '/kaderisasi/mapaba', label: 'Materi MAPABA' },
-  { href: '/kaderisasi/pkd', label: 'Materi PKD' },
-  { href: '/kaderisasi/pkl', label: 'Materi PKL' },
+  { href: '/kaderisasi/mapaba', label: 'MAPABA' },
+  { href: '/kaderisasi/pkd', label: 'PKD' },
+  { href: '/kaderisasi/pkl', label: 'PKL' },
 ];
 
 export default function KaderisasiLayout({
