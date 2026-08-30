@@ -1,0 +1,377 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ==========================================
+// 1. MASTER ORGANISASI (Baru ditambahkan untuk scope data)
+// ==========================================
+
+model Komisariat {
+  id        String   @id @default(cuid())
+  nama      String   @unique
+  rayon     Rayon[]
+  users     User[]
+  kader     Kader[]
+  
+  berita            Berita[]
+  programKaderisasi ProgramKaderisasi[]
+  pengajuanSurat    PengajuanSurat[]
+  surat             Surat[]
+  pengajuanSK       PengajuanSK[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Rayon {
+  id           String   @id @default(cuid())
+  nama         String
+  komisariatId String
+  komisariat   Komisariat @relation(fields: [komisariatId], references: [id], onDelete: Cascade)
+  
+  users        User[]
+  kader        Kader[]
+  
+  berita            Berita[]
+  programKaderisasi ProgramKaderisasi[]
+  pengajuanSurat    PengajuanSurat[]
+  surat             Surat[]
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([nama, komisariatId])
+}
+
+// ==========================================
+// 2. AUTENTIKASI & PENGGUNA (NextAuth Standard)
+// ==========================================
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id             String    @id @default(cuid())
+  name           String?
+  email          String?   @unique
+  emailVerified  DateTime?
+  image          String?
+  password       String? 
+  role           Role      @default(ANGGOTA) // Role RBAC baru
+  statusApproval String    @default("PENDING") // PENDING, APPROVED, REJECTED
+  
+  komisariatId   String?
+  rayonId        String?
+  komisariat     Komisariat? @relation(fields: [komisariatId], references: [id], onDelete: SetNull)
+  rayon          Rayon?      @relation(fields: [rayonId], references: [id], onDelete: SetNull)
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  accounts       Account[]
+  sessions       Session[]
+  kader          Kader? 
+  berita         Berita[] 
+  pengajuanSurat PengajuanSurat[]
+  pengajuanSK    PengajuanSK[]
+  pesertaKaderisasi PesertaKaderisasi[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN_CABANG
+  ADMIN_KOMISARIAT
+  ADMIN_RAYON
+  ANGGOTA
+}
+
+// ==========================================
+// 3. BASIS DATA KADER (E-SAHABAT)
+// ==========================================
+
+model Kader {
+  id           String    @id @default(cuid())
+  userId       String?   @unique
+  nia          String?   @unique // Nomor Induk Anggota
+  namaLengkap  String
+  tempatLahir  String?
+  tanggalLahir DateTime?
+  jenisKelamin Gender
+  alamat       String?   @db.Text
+  noTelepon    String?
+
+  // Asal Usul
+  asalKampus   String?
+  fakultas     String?
+  jurusan      String?
+  tahunMasuk   Int?
+  
+  komisariatId String?
+  rayonId      String?
+  komisariat   Komisariat? @relation(fields: [komisariatId], references: [id], onDelete: SetNull)
+  rayon        Rayon?      @relation(fields: [rayonId], references: [id], onDelete: SetNull)
+
+  // Jenjang Kaderisasi
+  statusMapaba Boolean @default(false)
+  statusPKD    Boolean @default(false)
+  statusPKL    Boolean @default(false)
+
+  // Meta
+  isVerified Boolean  @default(false)
+  fotoProfil String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum Gender {
+  LAKI_LAKI
+  PEREMPUAN
+}
+
+// ==========================================
+// 4. PUBLIKASI (BERITA & AGENDA)
+// ==========================================
+
+model Berita {
+  id           String  @id @default(cuid())
+  slug         String  @unique
+  judul        String
+  ringkasan    String  @db.Text
+  konten       String  @db.Text
+  kategori     String 
+  gambarSampul String?
+  viewCount    Int     @default(0)
+  isPublished  Boolean @default(true)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+  
+  komisariatId String?
+  rayonId      String?
+  komisariat   Komisariat? @relation(fields: [komisariatId], references: [id], onDelete: Cascade)
+  rayon        Rayon?      @relation(fields: [rayonId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Agenda {
+  id               String   @id @default(cuid())
+  judul            String
+  kategori         String 
+  lokasi           String
+  waktuPelaksanaan DateTime
+  status           String 
+  deskripsi        String?  @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// 5. LAYANAN PERSURATAN & SK
+// ==========================================
+
+model PengajuanSurat {
+  id           String  @id @default(cuid())
+  nomorResi    String  @unique 
+  userId       String? 
+  namaPemohon  String
+  asalStruktur String
+  jenisSurat   String 
+  perihal      String
+  keterangan   String? @db.Text
+  
+  tujuanScope  TujuanScope @default(PC)
+  tujuanId     String? // Referensi ID Komisariat / Rayon jika tujuannya bukan PC
+
+  status         StatusPengajuan @default(PENDING)
+  catatanAdmin   String?         @db.Text
+  fileBalasanUrl String? 
+  
+  komisariatId String?
+  rayonId      String?
+  komisariat   Komisariat? @relation(fields: [komisariatId], references: [id], onDelete: Cascade)
+  rayon        Rayon?      @relation(fields: [rayonId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model PengajuanSK {
+  id            String    @id @default(cuid())
+  nomorResi     String    @unique
+  userId        String? 
+  tingkatan     TingkatSK 
+  namaStruktur  String 
+  periode       String 
+  ketuaTerpilih String
+  asalStruktur  String 
+
+  fileSyaratUrl  String 
+  status         StatusPengajuan @default(PENDING)
+  catatanAdmin   String?         @db.Text
+  fileBalasanUrl String? 
+  
+  komisariatId String?
+  komisariat   Komisariat? @relation(fields: [komisariatId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model Surat {
+  id         String   @id @default(cuid())
+  nomorSurat String   @unique
+  jenis      String // "MASUK" atau "KELUAR"
+  kategori   String // "SK", "Undangan", "Mandat", dll
+  perihal    String
+  pengirim   String? // Untuk surat masuk
+  tujuan     String? // Untuk surat keluar
+  tanggal    DateTime
+  fileUrl    String? 
+  keterangan String?  @db.Text
+  
+  komisariatId String?
+  rayonId      String?
+  komisariat   Komisariat? @relation(fields: [komisariatId], references: [id], onDelete: Cascade)
+  rayon        Rayon?      @relation(fields: [rayonId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum TujuanScope {
+  PC
+  KOMISARIAT
+  RAYON
+}
+
+enum TingkatSK {
+  RAYON
+  KOMISARIAT
+}
+
+enum StatusPengajuan {
+  PENDING
+  DIPROSES
+  DITERIMA
+  DITOLAK
+}
+
+// ==========================================
+// 6. MODUL KADERISASI (SCREENING & PRESENSI)
+// ==========================================
+
+model ProgramKaderisasi {
+  id              String   @id @default(cuid())
+  jenis           String   // MAPABA, PKD, PKL
+  angkatan        String
+  tanggalMulai    DateTime
+  tanggalSelesai  DateTime
+  lokasi          String
+  deskripsi       String?  @db.Text
+  status          String   @default("OPEN") 
+  kodePresensi    String?  @unique 
+  
+  komisariatId    String?
+  rayonId         String?
+  komisariat      Komisariat? @relation(fields: [komisariatId], references: [id], onDelete: Cascade)
+  rayon           Rayon?      @relation(fields: [rayonId], references: [id], onDelete: Cascade)
+  
+  peserta         PesertaKaderisasi[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model PesertaKaderisasi {
+  id                String   @id @default(cuid())
+  programId         String
+  userId            String
+  
+  alasanIkut        String?  @db.Text
+  pengalaman        String?  @db.Text
+  
+  statusScreening   String   @default("PENDING") 
+  statusKelulusan   Boolean  @default(false)
+  waktuPresensi     DateTime? 
+  
+  program           ProgramKaderisasi @relation(fields: [programId], references: [id], onDelete: Cascade)
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([programId, userId])
+}
+
+model MateriKaderisasi {
+  id        String   @id @default(cuid())
+  judul     String
+  jenjang   String   
+  fileUrl   String   
+  ukuran    String?  
+  format    String?  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// 7. STRUKTUR PENGURUS (PROFIL)
+// ==========================================
+
+model StrukturPengurus {
+  id        String   @id @default(cuid())
+  nama      String
+  jabatan   String
+  divisi    String   
+  urutan    Int      @default(0) 
+  periode   String?  
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
