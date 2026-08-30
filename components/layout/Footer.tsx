@@ -23,14 +23,18 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="text-white font-semibold mb-4 text-sm">Navigasi</h4>
-            <ul className="space-y-2 text-sm">
-              {['Beranda', 'Profil Organisasi', 'Berita', 'Agenda', 'Kaderisasi', 'Download', 'Kontak'].map(link => (
-                <li key={link}>
-                  <Link href={link === 'Beranda' ? '/' : '#'} className="hover:text-primary-400 transition-colors">{link}</Link>
-                </li>
-              ))}
-            </ul>
+            <h4 className="text-white font-semibold mb-4 text-sm">Lokasi</h4>
+            <div className="w-full h-40 rounded-xl overflow-hidden border border-gray-800">
+              <iframe
+                src="https://maps.google.com/maps?q=Sekretariat+PC+PMII+Kabupaten+Bandung&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
           </div>
 
           <div>
@@ -41,16 +45,16 @@ export function Footer() {
                 <span>Sekretariat PC PMII Kab. Bandung, Soreang, Jawa Barat</span>
               </li>
               <li className="flex items-center gap-2">
-                <Phone size={14} className="text-primary-400" />
+                <Phone size={14} className="text-primary-400 flex-shrink-0" />
                 <span>+62 812-3456-7890</span>
               </li>
-              <li className="flex items-center gap-2">
-                <Mail size={14} className="text-primary-400" />
-                <span>info@esahabat.id</span>
+              <li className="flex items-start gap-2">
+                <Mail size={14} className="text-primary-400 mt-0.5 flex-shrink-0" />
+                <span className="break-all">pcpmiikabupatenbandung@gmail.com</span>
               </li>
               <li className="flex items-center gap-2">
-                <Globe size={14} className="text-primary-400" />
-                <span>www.esahabat.id</span>
+                <Globe size={14} className="text-primary-400 flex-shrink-0" />
+                <span>www.pcpmiikabbandung.org</span>
               </li>
             </ul>
           </div>
