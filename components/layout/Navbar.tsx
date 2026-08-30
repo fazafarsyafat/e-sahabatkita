@@ -15,7 +15,6 @@ export const navLinks = [
   { href: '/publikasi', label: 'Berita & Agenda', submenu: [
     { href: '/publikasi/berita', label: 'Berita' },
     { href: '/publikasi/agenda', label: 'Agenda' },
-    { href: '/publikasi/galeri', label: 'Galeri' },
   ]},
   { href: '/kaderisasi', label: 'Kaderisasi', submenu: [
     { href: '/kaderisasi/mapaba', label: 'MAPABA' },

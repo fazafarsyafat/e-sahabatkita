@@ -7,7 +7,6 @@ import { motion } from 'framer-motion';
 const tabs = [
   { href: '/publikasi/berita', label: 'Berita' },
   { href: '/publikasi/agenda', label: 'Agenda' },
-  { href: '/publikasi/galeri', label: 'Galeri' },
 ];
 
 export default function PublikasiLayout({
