@@ -468,14 +468,18 @@ export default function HomePage() {
                 className="lg:col-span-2 card overflow-hidden group"
               >
                 <div className="relative h-52 bg-gradient-to-br from-primary-500 to-primary-700 overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
+                  {featuredBerita.gambarSampul ? (
+                    <img src={featuredBerita.gambarSampul} alt={featuredBerita.judul} className="absolute inset-0 w-full h-full object-cover" />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center opacity-20">
+                      <Newspaper size={80} className="text-white" />
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
                   <div className="absolute top-3 left-3 z-20 badge badge-gold">⭐ Featured</div>
                   <div className="absolute bottom-4 left-4 right-4 z-20">
                     <span className="badge badge-green text-xs mb-2">{featuredBerita.kategori}</span>
                     <h3 className="text-white font-bold text-lg leading-tight line-clamp-2">{featuredBerita.judul}</h3>
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center opacity-20">
-                    <Newspaper size={80} className="text-white" />
                   </div>
                 </div>
                 <div className="p-5">
@@ -498,8 +502,12 @@ export default function HomePage() {
                   transition={{ delay: i * 0.1 }}
                   className="card p-4 flex gap-3 items-start group hover:border-primary-200 dark:hover:border-primary-800"
                 >
-                  <div className="w-14 h-14 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <Newspaper size={18} className="text-primary-500" />
+                  <div className="w-14 h-14 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    {b.gambarSampul ? (
+                      <img src={b.gambarSampul} alt={b.judul} className="w-full h-full object-cover" />
+                    ) : (
+                      <Newspaper size={18} className="text-primary-500" />
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <span className="badge badge-blue text-xs mb-1">{b.kategori}</span>
