@@ -18,13 +18,6 @@ const publikasiMenus = [
     icon: Calendar,
     href: '/publikasi/agenda',
     color: 'from-gold-500 to-gold-600'
-  },
-  {
-    title: 'Galeri Foto',
-    desc: 'Dokumentasi visual dari setiap pergerakan dan langkah juang kader PMII.',
-    icon: ImageIcon,
-    href: '/publikasi/galeri',
-    color: 'from-blue-500 to-blue-700'
   }
 ];
 
