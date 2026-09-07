@@ -55,10 +55,11 @@ const features = [
 ];
 
 const faqs = [
-  { q: 'Apa itu E-SAHABAT?', a: 'E-SAHABAT adalah Sistem Administrasi, Hub Arsip, dan Basis Anggota Terpadu milik PC PMII Kabupaten Bandung untuk layanan digital organisasi.' },
-  { q: 'Siapa yang dapat mengakses E-SAHABAT?', a: 'Seluruh anggota dan pengurus PMII Kabupaten Bandung dapat mengakses sistem ini sesuai hak akses masing-masing.' },
-  { q: 'Bagaimana cara mendaftar sebagai anggota?', a: 'Klik tombol Daftar Anggota di halaman beranda, isi formulir pendaftaran, dan tunggu verifikasi dari pengurus.' },
-  { q: 'Apakah data saya aman?', a: 'Ya. Sistem dilindungi dengan autentikasi JWT, enkripsi data, dan audit log untuk keamanan informasi.' },
+  { q: 'Apa itu PMII Kab Bandung?', a: 'PMII Kab Bandung adalah Pengurus Cabang Pergerakan Mahasiswa Islam Indonesia (PC PMII) di Kabupaten Bandung yang menaungi komisariat dan rayon mahasiswa di berbagai kampus se-Kabupaten Bandung.' },
+  { q: 'Apa itu E-SAHABAT?', a: 'E-SAHABAT adalah Sistem Administrasi, Hub Arsip, dan Basis Anggota Terpadu resmi milik PC PMII Kabupaten Bandung untuk layanan digital dan tata kelola organisasi modern.' },
+  { q: 'Siapa yang dapat mengakses sistem E-SAHABAT PMII Kab Bandung?', a: 'Seluruh kader, anggota aktif, dan pengurus PMII Kabupaten Bandung dapat mengakses sistem ini sesuai kewenangan dan hak akses masing-masing.' },
+  { q: 'Bagaimana cara mendaftar sebagai anggota PMII Kabupaten Bandung?', a: 'Klik tombol Daftar Anggota di halaman beranda, isi data diri dan komisariat kampus asal Anda, lalu ikuti proses verifikasi dan kaderisasi MAPABA.' },
+  { q: 'Apakah data kader di sistem ini aman?', a: 'Ya. Sistem E-SAHABAT PC PMII Kabupaten Bandung dilindungi autentikasi JWT, enkripsi data, dan audit log untuk menjamin keamanan data anggota.' },
 ];
 
 export default function HomePage() {
@@ -159,27 +160,27 @@ export default function HomePage() {
               {/* Badge */}
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-50 dark:bg-primary-900/30 border border-primary-100 dark:border-primary-800 rounded-full text-primary-600 dark:text-primary-400 text-sm font-medium mb-6">
                 <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse" />
-                PC PMII Kabupaten Bandung
+                Website Resmi PMII Kab Bandung
               </div>
 
               {/* Logo PMII + Title */}
               <div className="mb-8 relative block w-fit group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-primary-400 to-primary-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-500"></div>
                 <div className="relative bg-white dark:bg-gray-900 p-4 px-6 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 transform group-hover:-translate-y-1 transition-all duration-300">
-                  <img src="/logo-wide.png" alt="E-Sahabat Logo" className="h-14 lg:h-16 w-auto object-contain drop-shadow-sm" />
+                  <img src="/logo-wide.png" alt="Logo PMII Kab Bandung - PC PMII Kabupaten Bandung" className="h-14 lg:h-16 w-auto object-contain drop-shadow-sm" />
                 </div>
               </div>
 
               <h1 className="text-4xl lg:text-5xl xl:text-6xl font-black text-gray-900 dark:text-white leading-tight mb-4">
-                <span className="text-primary-600 dark:text-primary-400">E-SAHABAT</span>
+                <span className="text-primary-600 dark:text-primary-400">PMII KAB BANDUNG</span>
                 <br />
-                <span className="text-gray-800 dark:text-gray-100 text-3xl lg:text-4xl font-bold leading-tight">
-                  Sistem Administrasi<br />Digital PMII
+                <span className="text-gray-800 dark:text-gray-100 text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">
+                  Website Resmi PC PMII Kabupaten Bandung
                 </span>
               </h1>
 
               <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-8 max-w-lg">
-                Pusat layanan digital PC PMII Kabupaten Bandung — administrasi organisasi, arsip digital, database kader, dan kaderisasi dalam satu platform terpadu.
+                Portal resmi Pengurus Cabang Pergerakan Mahasiswa Islam Indonesia (PC PMII) Kabupaten Bandung. Pusat layanan administrasi digital E-SAHABAT, kaderisasi, arsip organisasi, dan basis data anggota mahasiswa Islam se-Kabupaten Bandung.
               </p>
 
               <div className="flex flex-wrap gap-3">
@@ -336,10 +337,10 @@ export default function HomePage() {
               Tentang Sistem
             </div>
             <h2 className="text-3xl lg:text-4xl font-black text-gray-900 dark:text-white mb-4">
-              Apa itu <span className="gradient-text">E-SAHABAT?</span>
+              Mengenal <span className="gradient-text">PMII Kabupaten Bandung</span> & E-SAHABAT
             </h2>
             <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">
-              E-SAHABAT merupakan Sistem Administrasi, Hub Arsip, dan Basis Anggota Terpadu yang dikembangkan sebagai pusat layanan digital PC PMII Kabupaten Bandung dalam mengintegrasikan administrasi organisasi, pengelolaan arsip, basis data kader, serta proses kaderisasi secara efektif, transparan, dan berkelanjutan.
+              Pengurus Cabang Pergerakan Mahasiswa Islam Indonesia (PC PMII) Kabupaten Bandung merupakan wadah kaderisasi dan pergerakan mahasiswa Islam berhaluan Ahlussunnah wal Jama'ah. Melalui platform digital resmi E-SAHABAT, PMII Kab Bandung mengintegrasikan administrasi organisasi, arsip surat menyurat, serta basis data kader di seluruh komisariat dan rayon se-Kabupaten Bandung secara modern, transparan, dan berkelanjutan.
             </p>
           </motion.div>
 

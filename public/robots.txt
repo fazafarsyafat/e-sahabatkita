@@ -1,11 +1,11 @@
 User-agent: *
 Allow: /
-Allow: /berita
-Allow: /kaderisasi
-Allow: /konsultasi-hukum
 Allow: /profil
 Allow: /publikasi
+Allow: /kaderisasi
+Allow: /konsultasi-hukum
 Allow: /surat
+Allow: /berita
 
 # Block private/admin areas
 Disallow: /dashboard
@@ -13,4 +13,5 @@ Disallow: /api/
 Disallow: /login
 Disallow: /verify
 
-Sitemap: https://pmiikabbandung.org/sitemap.xml
+Sitemap: https://www.pmiikabbandung.org/sitemap.xml
+

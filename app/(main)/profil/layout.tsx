@@ -50,10 +50,10 @@ export default function ProfilLayout({
               Tentang Kami
             </div>
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white mb-4 md:mb-6 leading-tight drop-shadow-sm">
-              Profil <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-200">PMII</span>
+              Profil <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-200">PMII Kab Bandung</span>
             </h1>
             <p className="text-blue-100 text-base md:text-xl font-medium leading-relaxed max-w-2xl mx-auto drop-shadow-sm">
-              Mengenal lebih dekat Pergerakan Mahasiswa Islam Indonesia Cabang Kabupaten Bandung.
+              Mengenal lebih dekat Pengurus Cabang Pergerakan Mahasiswa Islam Indonesia (PC PMII) Kabupaten Bandung.
             </p>
           </motion.div>
         </div>

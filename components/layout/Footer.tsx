@@ -8,10 +8,10 @@ export function Footer() {
         <div className="grid md:grid-cols-4 gap-8 mb-10">
           <div className="md:col-span-2">
             <div className="mb-4">
-              <img src="/logo-wide.png" alt="E-Sahabat" className="h-10 w-auto object-contain brightness-0 invert" />
+              <img src="/logo-wide.png" alt="PMII Kab Bandung - Logo E-Sahabat" className="h-10 w-auto object-contain brightness-0 invert" />
             </div>
             <p className="text-sm leading-relaxed text-gray-500 mb-4">
-              Sistem Administrasi, Hub Arsip, dan Basis Anggota Terpadu milik Pengurus Cabang PMII Kabupaten Bandung.
+              Website Resmi & Sistem Administrasi, Hub Arsip, dan Basis Anggota Terpadu milik Pengurus Cabang PMII Kabupaten Bandung (PMII Kab Bandung).
             </p>
             <div className="flex gap-3">
               {['FB', 'IG', 'YT', 'TW'].map(s => (
@@ -54,7 +54,9 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <Globe size={14} className="text-primary-400 flex-shrink-0" />
-                <span>www.pcpmiikabbandung.org</span>
+                <a href="https://www.pmiikabbandung.org" className="hover:text-primary-400 transition-colors">
+                  www.pmiikabbandung.org
+                </a>
               </li>
             </ul>
           </div>

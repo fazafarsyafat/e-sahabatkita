@@ -49,10 +49,10 @@ export default function PublikasiLayout({
               Media & Informasi
             </div>
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white mb-4 md:mb-6 leading-tight drop-shadow-sm">
-              Pusat <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-200">Publikasi</span>
+              Berita & Publikasi <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-200">PMII Kab Bandung</span>
             </h1>
             <p className="text-blue-100 text-base md:text-xl font-medium leading-relaxed max-w-2xl mx-auto drop-shadow-sm">
-              Berita terkini, agenda kegiatan, dan dokumentasi pergerakan PMII Kabupaten Bandung.
+              Kabar terkini, agenda kegiatan organisasi, dan dokumentasi pergerakan PC PMII Kabupaten Bandung.
             </p>
           </motion.div>
         </div>

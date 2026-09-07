@@ -12,17 +12,17 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
   if (!berita) return {};
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.pcpmiikabbandung.org';
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.pmiikabbandung.org';
   const imageUrl = berita.gambarSampul || `${baseUrl}/logo-wide.png`;
 
   return {
-    title: `${berita.judul} | PC PMII Kabupaten Bandung`,
+    title: `${berita.judul} | PMII Kab Bandung`,
     description: berita.ringkasan,
     openGraph: {
       title: berita.judul,
       description: berita.ringkasan,
       url: `${baseUrl}/berita/${berita.slug}`,
-      siteName: 'PC PMII Kabupaten Bandung',
+      siteName: 'PMII Kab Bandung',
       images: [
         {
           url: imageUrl,

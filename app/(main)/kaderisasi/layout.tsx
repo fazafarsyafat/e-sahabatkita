@@ -50,10 +50,10 @@ export default function KaderisasiLayout({
               Modul Kaderisasi Formal
             </div>
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white mb-4 md:mb-6 leading-tight drop-shadow-sm">
-              Bina Kader <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-200">Berintegritas</span>
+              Kaderisasi <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-200">PMII Kab Bandung</span>
             </h1>
             <p className="text-blue-100 text-base md:text-xl font-medium leading-relaxed max-w-2xl mx-auto drop-shadow-sm">
-              Sistem manajemen jenjang kaderisasi PMII Kabupaten Bandung. Akses materi, absensi RTL, dan pengajuan screening secara terpusat.
+              Sistem informasi dan manajemen kaderisasi formal (MAPABA, PKD, PKL) PC PMII Kabupaten Bandung secara terpusat dan terintegrasi.
             </p>
           </motion.div>
         </div>
