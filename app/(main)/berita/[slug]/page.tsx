@@ -5,6 +5,8 @@ import { Calendar, User, ArrowLeft, Eye } from 'lucide-react';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import ShareButton from './ShareButton';
+import { headers } from 'next/headers';
+
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const berita = await prisma.berita.findUnique({
     where: { slug: params.slug },
@@ -12,22 +14,43 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
   if (!berita) return {};
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.pmiikabbandung.org';
-  const imageUrl = berita.gambarSampul || `${baseUrl}/logo-wide.png`;
+  let baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+  if (!baseUrl) {
+    try {
+      const headersList = headers();
+      const host = headersList.get('x-forwarded-host') || headersList.get('host');
+      const proto = headersList.get('x-forwarded-proto') || 'https';
+      if (host) {
+        baseUrl = `${proto}://${host}`;
+      }
+    } catch {
+      // ignore
+    }
+  }
+  if (!baseUrl) {
+    baseUrl = 'https://www.pmiikabbandung.org';
+  }
+
+  // Gunakan endpoint gambar yang selalu menyajikan binary file (bukan Base64 data URL)
+  // agar terbaca dengan sempurna oleh WhatsApp, Telegram, Facebook, dan Twitter crawler.
+  const imageUrl = `${baseUrl}/api/berita/image/${encodeURIComponent(berita.slug)}`;
 
   return {
     title: `${berita.judul} | PMII Kab Bandung`,
-    description: berita.ringkasan,
+    description: berita.ringkasan || 'Berita dan Informasi Seputar PC PMII Kabupaten Bandung',
     openGraph: {
       title: berita.judul,
-      description: berita.ringkasan,
+      description: berita.ringkasan || 'Berita dan Informasi Seputar PC PMII Kabupaten Bandung',
       url: `${baseUrl}/berita/${berita.slug}`,
       siteName: 'PMII Kab Bandung',
+      locale: 'id_ID',
       images: [
         {
           url: imageUrl,
+          secureUrl: imageUrl,
           width: 1200,
           height: 630,
+          type: 'image/jpeg',
           alt: berita.judul,
         },
       ],
@@ -37,7 +60,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     twitter: {
       card: 'summary_large_image',
       title: berita.judul,
-      description: berita.ringkasan,
+      description: berita.ringkasan || 'Berita dan Informasi Seputar PC PMII Kabupaten Bandung',
       images: [imageUrl],
     },
   };

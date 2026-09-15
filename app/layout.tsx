@@ -9,6 +9,8 @@ import { OrganizationJsonLd } from '@/components/seo/JsonLd';
 
 const inter = Inter({ subsets: ['latin'] });
 
+const defaultUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.pmiikabbandung.org';
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.pmiikabbandung.org'),
   title: {
