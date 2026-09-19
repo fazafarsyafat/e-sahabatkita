@@ -231,6 +231,7 @@ export default function BeritaPage() {
       [{ 'header': [1, 2, 3, false] }],
       ['bold', 'italic', 'underline', 'strike', 'blockquote'],
       [{'list': 'ordered'}, {'list': 'bullet'}],
+      [{ 'align': [] }],
       ['link'],
       ['clean']
     ],
@@ -280,7 +281,7 @@ export default function BeritaPage() {
               <div className="p-5 flex flex-col flex-grow">
                 <span className="text-[10px] font-bold text-primary-600 dark:text-primary-400 tracking-wider uppercase mb-2">{berita.kategori}</span>
                 <h3 className="font-bold text-gray-900 dark:text-white leading-snug line-clamp-2 mb-2 group-hover:text-primary-600 transition-colors">{berita.judul}</h3>
-                <p className="text-xs text-gray-500 line-clamp-2 mb-4 flex-grow">{berita.ringkasan}</p>
+                <p className="text-xs text-gray-500 line-clamp-2 mb-4 flex-grow text-justify">{berita.ringkasan}</p>
                 
                 <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100 dark:border-gray-800">
                   <div className="text-[10px] text-gray-400">
@@ -394,7 +395,7 @@ export default function BeritaPage() {
                         {/* Custom CSS to fix ReactQuill styling in dark mode and layout constraints */}
                         <style dangerouslySetInnerHTML={{__html: `
                           .ql-container { flex-grow: 1; border: none !important; font-family: inherit !important; font-size: 15px !important; }
-                          .ql-editor { min-height: 250px; }
+                          .ql-editor { min-height: 250px; text-align: justify; }
                           .ql-toolbar { border: none !important; border-bottom: 1px solid #e5e7eb !important; background: #f9fafb; }
                           .dark .ql-toolbar { background: #1f2937; border-bottom: 1px solid #374151 !important; }
                           .dark .ql-stroke { stroke: #d1d5db !important; }

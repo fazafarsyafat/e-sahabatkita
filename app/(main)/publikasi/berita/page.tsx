@@ -60,7 +60,7 @@ export default function BeritaPage() {
                   {berita.judul}
                 </h3>
                 
-                <p className="text-gray-600 dark:text-gray-400 text-sm mb-6 line-clamp-3 flex-1">
+                <p className="text-gray-600 dark:text-gray-400 text-sm mb-6 line-clamp-3 flex-1 text-justify">
                   {berita.ringkasan}
                 </p>
 

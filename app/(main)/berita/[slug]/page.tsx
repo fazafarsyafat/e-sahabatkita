@@ -113,7 +113,8 @@ export default async function BacaBeritaPage({ params }: { params: { slug: strin
               className="prose prose-lg md:prose-xl dark:prose-invert max-w-none 
                          prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-white
                          prose-a:text-primary-600 hover:prose-a:text-primary-700
-                         prose-img:rounded-2xl prose-img:shadow-md"
+                         prose-img:rounded-2xl prose-img:shadow-md
+                         text-justify prose-p:text-justify"
               dangerouslySetInnerHTML={{ __html: berita.konten }}
             />
           </div>

@@ -509,7 +509,7 @@ export default function HomePage() {
                     </Link>
                   </h3>
                   
-                  <p className="text-gray-500 dark:text-gray-400 text-xs mb-4 line-clamp-2 flex-1">
+                  <p className="text-gray-500 dark:text-gray-400 text-xs mb-4 line-clamp-2 flex-1 text-justify">
                     {berita.ringkasan}
                   </p>
 
