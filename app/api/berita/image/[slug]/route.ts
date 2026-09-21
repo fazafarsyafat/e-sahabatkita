@@ -10,7 +10,9 @@ export async function GET(
   { params }: { params: { slug: string } }
 ) {
   try {
-    const slug = decodeURIComponent(params.slug);
+    let slug = decodeURIComponent(params.slug);
+    // Hapus ekstensi semu seperti .jpg, .jpeg, .png, .webp jika ada
+    slug = slug.replace(/\.(jpe?g|png|webp)$/i, '');
 
     const berita = await prisma.berita.findUnique({
       where: { slug },
@@ -91,3 +93,5 @@ export async function GET(
     return new Response('Internal server error', { status: 500 });
   }
 }
+
+export { GET as HEAD };

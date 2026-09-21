@@ -32,8 +32,16 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 
   // Gunakan endpoint gambar yang selalu menyajikan binary file (bukan Base64 data URL)
-  // agar terbaca dengan sempurna oleh WhatsApp, Telegram, Facebook, dan Twitter crawler.
-  const imageUrl = `${baseUrl}/api/berita/image/${encodeURIComponent(berita.slug)}`;
+  // dengan ekstensi .jpg agar dikenali sebagai gambar oleh WhatsApp, Telegram, Facebook, dan Twitter crawler.
+  let imageUrl = `${baseUrl}/api/berita/image/${encodeURIComponent(berita.slug)}.jpg`;
+
+  // Jika gambarSampul sudah berupa URL eksternal langsung (http/https), gunakan langsung tanpa redirect 302
+  if (berita.gambarSampul) {
+    const trimmed = berita.gambarSampul.trim();
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      imageUrl = trimmed;
+    }
+  }
 
   return {
     title: `${berita.judul} | PMII Kab Bandung`,

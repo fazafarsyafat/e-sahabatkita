@@ -113,6 +113,12 @@ export default function BeritaPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Terjadi kesalahan');
       
+      // Pre-warm cache CDN untuk halaman dan gambar berita agar saat dibagikan ke WhatsApp langsung Cache HIT (tanpa delay cold start)
+      if (data?.slug) {
+        fetch(`/berita/${data.slug}`).catch(() => {});
+        fetch(`/api/berita/image/${encodeURIComponent(data.slug)}.jpg`).catch(() => {});
+      }
+
       toast.success(selectedBerita ? 'Berita berhasil diperbarui!' : 'Berita berhasil dipublikasikan!', { id: 'save-berita' });
       setShowModal(false);
       fetchBerita();
